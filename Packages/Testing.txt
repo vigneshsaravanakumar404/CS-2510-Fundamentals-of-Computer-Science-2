@@ -1,2 +1,3 @@
-javac -cp .;tester.jar Main.java
-java -cp .;tester.jar tester.Main [CLASS NAME OF TESTING]
+cls
+javac -cp .;tester.jar Paints.java
+java -cp .;tester.jar tester.Main ExamplesPaint
