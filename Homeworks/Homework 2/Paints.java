@@ -25,8 +25,7 @@ interface IPaint {
   // "Red + Blue"
   String mixingFormula(int depth);
 
-  // TODO:
-  // IPaint invert();
+  IPaint invert();
 }
 
 // to represent a solid paint color
@@ -42,16 +41,24 @@ class Solid implements IPaint {
 
   /*
    * TEMPLATE:
-   * Fields:
+   * 
+   * FIELDS:
    * ... this.name ... -- String
    * ... this.color ... -- Color
    * 
-   * Methods:
+   * METHODS:
    * ... this.getFinalColor() ... -- Color
    * ... this.countPaints() ... -- int
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.color.getRed() ... -- int
+   * ... this.color.getGreen() ... -- int
+   * ... this.color.getBlue() ... -- int
+   * ... this.color.darker() ... -- Color
+   * ... this.color.brighter() ... -- Color
    */
 
   // returns the color of this paint
@@ -79,10 +86,10 @@ class Solid implements IPaint {
     return this.name;
   }
 
-  // commented out method left as is
-  // public IPaint invert() {
-  // return this;
-  // }
+  // returns the inverted paint
+  public IPaint invert() {
+    return this;
+  }
 }
 
 // to represent a named combination of paint mixtures
@@ -98,16 +105,23 @@ class Combo implements IPaint {
 
   /*
    * TEMPLATE:
-   * Fields:
+   * FIELDS:
    * ... this.name ... -- String
    * ... this.operation ... -- IMixture
    * 
-   * Methods:
+   * METHODS:
    * ... this.getFinalColor() ... -- Color
    * ... this.countPaints() ... -- int
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.operation.getFinalColor() ... -- Color
+   * ... this.operation.countPaints() ... -- int
+   * ... this.operation.countMixes() ... -- int
+   * ... this.operation.formulaDepth() ... -- int
+   * ... this.operation.mixingFormula(int) ... -- String
    */
 
   // returns the final color of this combo paint
@@ -139,10 +153,10 @@ class Combo implements IPaint {
     return this.operation.mixingFormula(depth);
   }
 
-  // commented out method left as is
-  // public IPaint invert() {
-  // return new Combo(this.name, this.operation.invert());
-  // }
+  // returns the inverted paint
+  public IPaint invert() {
+    return new Combo(this.name, this.operation.invert());
+  }
 }
 
 // to represent paint mixtures with operations that can be performed on them
@@ -169,7 +183,7 @@ interface IMixture {
   String mixingFormula(int depth);
 
   // commented out method left as is
-  // IPaint invert();
+  IMixture invert();
 }
 
 // to represent a darkening operation on a paint
@@ -183,15 +197,22 @@ class Darken implements IMixture {
 
   /*
    * TEMPLATE:
-   * Fields:
+   * FIELDS:
    * ... this.paint ... -- IPaint
    * 
-   * Methods:
+   * METHODS:
    * ... this.getFinalColor() ... -- Color
    * ... this.countPaints() ... -- int
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.paint.getFinalColor() ... -- Color
+   * ... this.paint.countPaints() ... -- int
+   * ... this.paint.countMixes() ... -- int
+   * ... this.paint.formulaDepth() ... -- int
+   * ... this.paint.mixingFormula(int) ... -- String
    */
 
   // returns the darkened color of the paint
@@ -219,10 +240,9 @@ class Darken implements IMixture {
     return "darken(" + this.paint.mixingFormula(depth - 1) + ")";
   }
 
-  // commented out method left as is
-  // public IPaint invert() {
-  // return new Brighten(this.paint);
-  // }
+  public IMixture invert() {
+    return new Brighten(this.paint.invert());
+  }
 }
 
 // to represent a brightening operation on a paint
@@ -236,15 +256,22 @@ class Brighten implements IMixture {
 
   /*
    * TEMPLATE:
-   * Fields:
+   * FIELDS:
    * ... this.paint ... -- IPaint
    * 
-   * Methods:
+   * METHODS:
    * ... this.getFinalColor() ... -- Color
    * ... this.countPaints() ... -- int
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.paint.getFinalColor() ... -- Color
+   * ... this.paint.countPaints() ... -- int
+   * ... this.paint.countMixes() ... -- int
+   * ... this.paint.formulaDepth() ... -- int
+   * ... this.paint.mixingFormula(int) ... -- String
    */
 
   // returns the brightened color of the paint
@@ -274,9 +301,9 @@ class Brighten implements IMixture {
   }
 
   // commented out method left as is
-  // public Color invert() {
-  // return new Darken(this.paint).getFinalColor();
-  // }
+  public IMixture invert() {
+    return new Darken(this.paint.invert());
+  }
 }
 
 // to represent a blending operation between two paints
@@ -292,16 +319,30 @@ class Blend implements IMixture {
 
   /*
    * TEMPLATE:
-   * Fields:
+   * FIELDS:
    * ... this.paint1 ... -- IPaint
    * ... this.paint2 ... -- IPaint
    * 
-   * Methods:
+   * METHODS:
    * ... this.getFinalColor() ... -- Color
    * ... this.countPaints() ... -- int
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.paint1.getFinalColor() ... -- Color
+   * ... this.paint2.getFinalColor() ... -- Color
+   * ... this.paint1.countPaints() ... -- int
+   * ... this.paint2.countPaints() ... -- int
+   * ... this.paint1.countMixes() ... -- int
+   * ... this.paint2.countMixes() ... -- int
+   * ... this.paint1.formulaDepth() ... -- int
+   * ... this.paint2.formulaDepth() ... -- int
+   * ... this.paint1.mixingFormula(int) ... -- String
+   * ... this.paint2.mixingFormula(int) ... -- String
+   * ... this.paint1.invert() ... -- IPaint
+   * ... this.paint2.invert() ... -- IPaint
    */
 
   // returns the color that results from blending the two paints
@@ -330,6 +371,11 @@ class Blend implements IMixture {
   public String mixingFormula(int depth) {
     return "blend(" + this.paint1.mixingFormula(depth - 1) + ", "
         + this.paint2.mixingFormula(depth - 1) + ")";
+  }
+
+  // returns the inverted paint
+  public IMixture invert() {
+    return new Blend(this.paint1.invert(), this.paint2.invert());
   }
 }
 
@@ -458,8 +504,34 @@ class ExamplesPaint {
         && t.checkExpect(coral.mixingFormula(0), "coral")
         && t.checkExpect(coral.mixingFormula(1), "blend(pink, khaki)")
         && t.checkExpect(coral.mixingFormula(2), "blend(brighten(mauve), blend(red, green))")
-        && t.checkExpect(coral.mixingFormula(3), "blend(brighten(blend(purple, khaki)), blend(red, green))")
+        && t.checkExpect(coral.mixingFormula(3),
+            "blend(brighten(blend(purple, khaki)), blend(red, green))")
         && t.checkExpect(coral.mixingFormula(4),
             "blend(brighten(blend(blend(red, blue), blend(red, green))), blend(red, green))");
+  }
+
+  boolean testInvert(Tester t) {
+    // For solid paints, invert() should return the same paint
+    return t.checkExpect(red.invert(), red)
+
+        // For simple blends, invert() should return the same paint
+        // (since Blend operations don't change)
+        && t.checkExpect(purple.invert().mixingFormula(2), "blend(red, blue)")
+
+        // For darkened paints, invert() should convert to brightened
+        // darkPurple becomes brightened purple
+        && t.checkExpect(darkPurple.invert().mixingFormula(2), "brighten(blend(red, blue))")
+
+        // For brightened paints, invert() should convert to darkened
+        // yellow becomes darkened khaki
+        && t.checkExpect(yellow.invert().mixingFormula(2), "darken(blend(red, green))")
+
+        // For complex blends, invert() applies to nested operations
+        // mauve's formula doesn't contain any darken/brighten, so it stays the same
+        && t.checkExpect(mauve.invert().mixingFormula(2),
+            "blend(blend(red, blue), blend(red, green))")
+
+        // For pink (brighten(mauve)), invert() should change brighten to darken
+        && t.checkExpect(pink.invert().mixingFormula(2), "darken(blend(purple, khaki))");
   }
 }
