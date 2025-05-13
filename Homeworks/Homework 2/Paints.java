@@ -410,81 +410,81 @@ class ExamplesPaint {
 
   // Test getFinalColor()
   boolean testGetFinalColor(Tester t) {
-    return t.checkExpect(red.getFinalColor(), new Color(255, 0, 0))
-        && t.checkExpect(purple.getFinalColor(), new Color(127, 0, 127))
-        && t.checkExpect(darkPurple.getFinalColor(), purple.getFinalColor().darker())
-        && t.checkExpect(yellow.getFinalColor(), khaki.getFinalColor().brighter())
-        && t.checkExpect(mauve.getFinalColor(), new Color(126, 63, 63))
-        && t.checkExpect(pink.getFinalColor(), mauve.getFinalColor().brighter())
-        && t.checkExpect(coral.getFinalColor(),
-            new Color((pink.getFinalColor().getRed() + khaki.getFinalColor().getRed()) / 2,
-                (pink.getFinalColor().getGreen() + khaki.getFinalColor().getGreen()) / 2,
-                (pink.getFinalColor().getBlue() + khaki.getFinalColor().getBlue()) / 2));
+    return t.checkExpect(this.red.getFinalColor(), new Color(255, 0, 0))
+        && t.checkExpect(this.purple.getFinalColor(), new Color(127, 0, 127))
+        && t.checkExpect(this.darkPurple.getFinalColor(), this.purple.getFinalColor().darker())
+        && t.checkExpect(this.yellow.getFinalColor(), this.khaki.getFinalColor().brighter())
+        && t.checkExpect(this.mauve.getFinalColor(), new Color(126, 63, 63))
+        && t.checkExpect(this.pink.getFinalColor(), this.mauve.getFinalColor().brighter())
+        && t.checkExpect(this.coral.getFinalColor(),
+            new Color((this.pink.getFinalColor().getRed() + this.khaki.getFinalColor().getRed()) / 2,
+                (this.pink.getFinalColor().getGreen() + this.khaki.getFinalColor().getGreen()) / 2,
+                (this.pink.getFinalColor().getBlue() + this.khaki.getFinalColor().getBlue()) / 2));
   }
 
   // test countPaints()
   boolean testCountPaints(Tester t) {
-    return t.checkExpect(red.countPaints(), 1)
-        && t.checkExpect(purple.countPaints(), 2)
-        && t.checkExpect(khaki.countPaints(), 2)
-        && t.checkExpect(darkPurple.countPaints(), 3)
-        && t.checkExpect(yellow.countPaints(), 3)
-        && t.checkExpect(mauve.countPaints(), 4)
-        && t.checkExpect(pink.countPaints(), 5)
-        && t.checkExpect(coral.countPaints(), 7);
+    return t.checkExpect(this.red.countPaints(), 1)
+        && t.checkExpect(this.purple.countPaints(), 2)
+        && t.checkExpect(this.khaki.countPaints(), 2)
+        && t.checkExpect(this.darkPurple.countPaints(), 3)
+        && t.checkExpect(this.yellow.countPaints(), 3)
+        && t.checkExpect(this.mauve.countPaints(), 4)
+        && t.checkExpect(this.pink.countPaints(), 5)
+        && t.checkExpect(this.coral.countPaints(), 7);
   }
 
   // test countMixes()
   boolean testCountMixes(Tester t) {
-    return t.checkExpect(red.countMixes(), 0)
-        && t.checkExpect(purple.countMixes(), 1)
-        && t.checkExpect(khaki.countMixes(), 1)
-        && t.checkExpect(darkPurple.countMixes(), 2)
-        && t.checkExpect(yellow.countMixes(), 2)
-        && t.checkExpect(mauve.countMixes(), 3)
-        && t.checkExpect(pink.countMixes(), 4)
-        && t.checkExpect(coral.countMixes(), 6);
+    return t.checkExpect(this.red.countMixes(), 0)
+        && t.checkExpect(this.purple.countMixes(), 1)
+        && t.checkExpect(this.khaki.countMixes(), 1)
+        && t.checkExpect(this.darkPurple.countMixes(), 2)
+        && t.checkExpect(this.yellow.countMixes(), 2)
+        && t.checkExpect(this.mauve.countMixes(), 3)
+        && t.checkExpect(this.pink.countMixes(), 4)
+        && t.checkExpect(this.coral.countMixes(), 6);
   }
 
   // test formulaDepth()
   boolean testFormulaDepth(Tester t) {
-    return t.checkExpect(red.formulaDepth(), 0)
-        && t.checkExpect(purple.formulaDepth(), 1)
-        && t.checkExpect(khaki.formulaDepth(), 1)
-        && t.checkExpect(darkPurple.formulaDepth(), 2)
-        && t.checkExpect(yellow.formulaDepth(), 2)
-        && t.checkExpect(mauve.formulaDepth(), 2)
-        && t.checkExpect(pink.formulaDepth(), 3)
-        && t.checkExpect(coral.formulaDepth(), 4);
+    return t.checkExpect(this.red.formulaDepth(), 0)
+        && t.checkExpect(this.purple.formulaDepth(), 1)
+        && t.checkExpect(this.khaki.formulaDepth(), 1)
+        && t.checkExpect(this.darkPurple.formulaDepth(), 2)
+        && t.checkExpect(this.yellow.formulaDepth(), 2)
+        && t.checkExpect(this.mauve.formulaDepth(), 2)
+        && t.checkExpect(this.pink.formulaDepth(), 3)
+        && t.checkExpect(this.coral.formulaDepth(), 4);
   }
 
   // test mixingFormula()
   boolean testMixingFormula(Tester t) {
-    return t.checkExpect(red.mixingFormula(0), "red")
-        && t.checkExpect(red.mixingFormula(1), "red")
-        && t.checkExpect(red.mixingFormula(5), "red")
+    return t.checkExpect(this.red.mixingFormula(0), "red")
+        && t.checkExpect(this.red.mixingFormula(1), "red")
+        && t.checkExpect(this.red.mixingFormula(5), "red")
 
-        && t.checkExpect(purple.mixingFormula(0), "purple")
-        && t.checkExpect(purple.mixingFormula(1), "blend(red, blue)")
-        && t.checkExpect(purple.mixingFormula(2), "blend(red, blue)")
+        && t.checkExpect(this.purple.mixingFormula(0), "purple")
+        && t.checkExpect(this.purple.mixingFormula(1), "blend(red, blue)")
+        && t.checkExpect(this.purple.mixingFormula(2), "blend(red, blue)")
 
-        && t.checkExpect(coral.mixingFormula(0), "coral")
-        && t.checkExpect(coral.mixingFormula(1), "blend(pink, khaki)")
-        && t.checkExpect(coral.mixingFormula(2), "blend(brighten(mauve), blend(red, green))")
-        && t.checkExpect(coral.mixingFormula(3),
+        && t.checkExpect(this.coral.mixingFormula(0), "coral")
+        && t.checkExpect(this.coral.mixingFormula(1), "blend(pink, khaki)")
+        && t.checkExpect(this.coral.mixingFormula(2), "blend(brighten(mauve), blend(red, green))")
+        && t.checkExpect(this.coral.mixingFormula(3),
             "blend(brighten(blend(purple, khaki)), blend(red, green))")
-        && t.checkExpect(coral.mixingFormula(4),
+        && t.checkExpect(this.coral.mixingFormula(4),
             "blend(brighten(blend(blend(red, blue), blend(red, green))), blend(red, green))");
   }
 
   // test invert()
   boolean testInvert(Tester t) {
-    return t.checkExpect(red.invert(), red)
-        && t.checkExpect(purple.invert().mixingFormula(2), "blend(red, blue)")
-        && t.checkExpect(darkPurple.invert().mixingFormula(2), "brighten(blend(red, blue))")
-        && t.checkExpect(yellow.invert().mixingFormula(2), "darken(blend(red, green))")
-        && t.checkExpect(mauve.invert().mixingFormula(2),
+    return t.checkExpect(this.red.invert(), this.red)
+        && t.checkExpect(this.purple.invert().mixingFormula(2), "blend(red, blue)")
+        && t.checkExpect(this.darkPurple.invert().mixingFormula(2), "brighten(blend(red, blue))")
+        && t.checkExpect(this.yellow.invert().mixingFormula(2), "darken(blend(red, green))")
+        && t.checkExpect(this.mauve.invert().mixingFormula(2),
             "blend(blend(red, blue), blend(red, green))")
-        && t.checkExpect(pink.invert().mixingFormula(2), "darken(blend(purple, khaki))");
+        && t.checkExpect(this.pink.invert().mixingFormula(2), "darken(blend(purple, khaki))");
   }
 }
