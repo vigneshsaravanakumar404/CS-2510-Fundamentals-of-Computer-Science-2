@@ -25,8 +25,7 @@ interface IPaint {
   // "Red + Blue"
   String mixingFormula(int depth);
 
-  // commented out method left as is with its purpose statement
-  // Returns a paint with inverted color values
+  // TODO:
   // IPaint invert();
 }
 
@@ -109,15 +108,6 @@ class Combo implements IPaint {
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
-   * 
-   * Methods for fields:
-   * ... this.name.equals(String) ... -- boolean
-   * ... this.name.length() ... -- int
-   * ... this.operation.getFinalColor() ... -- Color
-   * ... this.operation.countPaints() ... -- int
-   * ... this.operation.countMixes() ... -- int
-   * ... this.operation.formulaDepth() ... -- int
-   * ... this.operation.mixingFormula(int) ... -- String
    */
 
   // returns the final color of this combo paint
@@ -202,13 +192,6 @@ class Darken implements IMixture {
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
-   * 
-   * Methods for fields:
-   * ... this.paint.getFinalColor() ... -- Color
-   * ... this.paint.countPaints() ... -- int
-   * ... this.paint.countMixes() ... -- int
-   * ... this.paint.formulaDepth() ... -- int
-   * ... this.paint.mixingFormula(int) ... -- String
    */
 
   // returns the darkened color of the paint
@@ -262,13 +245,6 @@ class Brighten implements IMixture {
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
-   * 
-   * Methods for fields:
-   * ... this.paint.getFinalColor() ... -- Color
-   * ... this.paint.countPaints() ... -- int
-   * ... this.paint.countMixes() ... -- int
-   * ... this.paint.formulaDepth() ... -- int
-   * ... this.paint.mixingFormula(int) ... -- String
    */
 
   // returns the brightened color of the paint
@@ -326,31 +302,13 @@ class Blend implements IMixture {
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
-   * 
-   * Methods for fields:
-   * ... this.paint1.getFinalColor() ... -- Color
-   * ... this.paint1.countPaints() ... -- int
-   * ... this.paint1.countMixes() ... -- int
-   * ... this.paint1.formulaDepth() ... -- int
-   * ... this.paint1.mixingFormula(int) ... -- String
-   * ... this.paint2.getFinalColor() ... -- Color
-   * ... this.paint2.countPaints() ... -- int
-   * ... this.paint2.countMixes() ... -- int
-   * ... this.paint2.formulaDepth() ... -- int
-   * ... this.paint2.mixingFormula(int) ... -- String
-   * 
-   * Methods from other classes:
-   * ... Math.max(int, int) ... -- int
    */
 
   // returns the color that results from blending the two paints
   public Color getFinalColor() {
-    Color color1 = this.paint1.getFinalColor();
-    Color color2 = this.paint2.getFinalColor();
-    return new Color(
-        ((color1.getRed() + color2.getRed()) / 2),
-        (color1.getGreen() + color2.getGreen()) / 2,
-        (color1.getBlue() + color2.getBlue()) / 2);
+    return new Color((paint1.getFinalColor().getRed() / 2) + (paint2.getFinalColor().getRed() / 2),
+        (paint1.getFinalColor().getGreen() / 2) + (paint2.getFinalColor().getGreen() / 2),
+        (paint1.getFinalColor().getBlue() / 2) + (paint2.getFinalColor().getBlue() / 2));
   }
 
   // counts the total number of solid paints in this blend
@@ -411,7 +369,7 @@ class ExamplesPaint {
         && t.checkExpect(yellow.getFinalColor(), khaki.getFinalColor().brighter())
 
         // Test complex blend (mauve is blend of purple and khaki)
-        && t.checkExpect(mauve.getFinalColor(), new Color(127, 63, 63))
+        && t.checkExpect(mauve.getFinalColor(), new Color(126, 63, 63))
 
         // Test brightened complex blend (pink is brightened mauve)
         && t.checkExpect(pink.getFinalColor(), mauve.getFinalColor().brighter())
@@ -432,11 +390,9 @@ class ExamplesPaint {
         && t.checkExpect(khaki.countPaints(), 2)
 
         // Test darkened (darkPurple is purple + black: 2+1=3)
-        // Remember: darkening adds a solid black paint
         && t.checkExpect(darkPurple.countPaints(), 3)
 
         // Test brightened (yellow is khaki + white: 2+1=3)
-        // Remember: brightening adds a solid white paint
         && t.checkExpect(yellow.countPaints(), 3)
         && t.checkExpect(mauve.countPaints(), 4)
 
@@ -447,4 +403,63 @@ class ExamplesPaint {
         && t.checkExpect(coral.countPaints(), 7);
   }
 
+  boolean testCountMixes(Tester t) {
+    // Test solid paints (each should have 0 mixes)
+    return t.checkExpect(red.countMixes(), 0)
+
+        // Test simple blends (purple is blend of red and blue: 1 mix)
+        && t.checkExpect(purple.countMixes(), 1)
+        && t.checkExpect(khaki.countMixes(), 1)
+
+        // purple has 1 mix + 1 for darkening = 2 total
+        && t.checkExpect(darkPurple.countMixes(), 2)
+
+        // khaki has 1 mix + 1 for brightening = 2 total
+        && t.checkExpect(yellow.countMixes(), 2)
+
+        // purple has 1 mix + khaki has 1 mix + 1 for blending them = 3 total
+        && t.checkExpect(mauve.countMixes(), 3)
+
+        // mauve has 3 mixes + 1 for brightening = 4 total
+        && t.checkExpect(pink.countMixes(), 4)
+
+        // pink has 4 mixes + khaki has 1 mix + 1 for blending them = 6 total
+        && t.checkExpect(coral.countMixes(), 6);
+  }
+
+  boolean testFormulaDepth(Tester t) {
+    // Test solid paints (each should have depth 0)
+    return t.checkExpect(red.formulaDepth(), 0)
+
+        // Test simple blends (purple is blend of red and blue: depth 1)
+        && t.checkExpect(purple.formulaDepth(), 1)
+        && t.checkExpect(khaki.formulaDepth(), 1)
+
+        // purple has depth 1, and darkening adds 1 level = depth 2
+        && t.checkExpect(darkPurple.formulaDepth(), 2)
+
+        // khaki has depth 1, and brightening adds 1 level = depth 2
+        && t.checkExpect(yellow.formulaDepth(), 2)
+        && t.checkExpect(mauve.formulaDepth(), 2)
+        && t.checkExpect(pink.formulaDepth(), 3)
+        && t.checkExpect(coral.formulaDepth(), 4);
+  }
+
+  boolean testMixingFormula(Tester t) {
+    // Test solid paints at different depths
+    return t.checkExpect(red.mixingFormula(0), "red")
+        && t.checkExpect(red.mixingFormula(1), "red")
+        && t.checkExpect(red.mixingFormula(5), "red")
+
+        && t.checkExpect(purple.mixingFormula(0), "purple")
+        && t.checkExpect(purple.mixingFormula(1), "blend(red, blue)")
+        && t.checkExpect(purple.mixingFormula(2), "blend(red, blue)")
+
+        && t.checkExpect(coral.mixingFormula(0), "coral")
+        && t.checkExpect(coral.mixingFormula(1), "blend(pink, khaki)")
+        && t.checkExpect(coral.mixingFormula(2), "blend(brighten(mauve), blend(red, green))")
+        && t.checkExpect(coral.mixingFormula(3), "blend(brighten(blend(purple, khaki)), blend(red, green))")
+        && t.checkExpect(coral.mixingFormula(4),
+            "blend(brighten(blend(blend(red, blue), blend(red, green))), blend(red, green))");
+  }
 }
