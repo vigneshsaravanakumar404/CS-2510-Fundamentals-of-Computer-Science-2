@@ -12,8 +12,17 @@ interface ILoString {
   // returns a sublist of this list from start to end
   ILoString sublist(int start, int end);
 
-  //
+  // returns the lists interleaved
   ILoString interleave(ILoString other);
+
+  // merge two sorted lists
+  ILoString merge(ILoString other);
+
+  // to check if the list is a doubled list
+  boolean isDoubledList();
+
+  // to check if the list is a palindrome
+  boolean isPalindromeList();
 }
 
 // to represent an empty list of Strings
@@ -55,6 +64,11 @@ class MtLoString implements ILoString {
 
   // returns a new list that is the interleaving of this list and the other list
   public ILoString interleave(ILoString other) {
+    return other;
+  }
+
+  // merge two sorted lists
+  public ILoString merge(ILoString other) {
     return other;
   }
 }
@@ -101,19 +115,27 @@ class ConsLoString implements ILoString {
 
   // returns a sublist of this list from start to end
   public ILoString sublist(int start, int end) {
-    if (start <= 0 && end > 0) {
-      return new ConsLoString(this.first, this.rest.sublist(0, end - 1));
+    if (start == 0 && end == -1) {
+      return new MtLoString();
     }
-    if (start > 0 && end > 0) {
-      return this.rest.sublist(start - 1, end - 1);
+    if (start == 0) {
+      return new ConsLoString(this.first, this.rest.sublist(start, end - 1));
     }
+    return this.rest.sublist(start - 1, end - 1);
 
-    return new MtLoString();
   }
 
   // returns a new list that is the interleaving of this list and the other list
   public ILoString interleave(ILoString other) {
     return new ConsLoString(this.first, other.interleave(this.rest));
+  }
+
+  // merge two sorted lists
+  public ILoString merge(ILoString other) {
+    if (this.first.compareToIgnoreCase(other.combine()) > 0) { // if other comes before this
+      return other.merge(this);
+    }
+    return new ConsLoString(this.first, this.rest.merge(other));
   }
 
 }
@@ -150,15 +172,15 @@ class ExamplesStrings {
                     new ConsLoString("it.", new ConsLoString("lamb.", new MtLoString()))))))))));
   }
 
-  // boolean testILoStringMerge(Tester t) {
-  // return t
-  // .checkExpect(sortedA.merge(sortedB),
-  // new ConsLoString("a",
-  // new ConsLoString("a",
-  // new ConsLoString("b", new ConsLoString("c", new ConsLoString("c",
-  // new ConsLoString("c", new ConsLoString("d", new ConsLoString("e",
-  // new ConsLoString("e", new ConsLoString("e", new MtLoString())))))))))));
-  // }
+  boolean testILoStringMerge(Tester t) {
+    return t
+        .checkExpect(sortedA.merge(sortedB),
+            new ConsLoString("a",
+                new ConsLoString("a",
+                    new ConsLoString("b", new ConsLoString("c", new ConsLoString("c",
+                        new ConsLoString("c", new ConsLoString("d", new ConsLoString("e",
+                            new ConsLoString("e", new ConsLoString("e", new MtLoString())))))))))));
+  }
 
   // boolean testILoStringIsDoubledList(Tester t) {
   // return t.checkExpect(sortedA.isDoubledList(sortedA), true)
