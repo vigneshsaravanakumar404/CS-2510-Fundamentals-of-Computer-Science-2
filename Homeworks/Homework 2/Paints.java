@@ -48,6 +48,7 @@ class Solid implements IPaint {
    * ... this.countMixes() ... -- int
    * ... this.formulaDepth() ... -- int
    * ... this.mixingFormula(int) ... -- String
+   * ... this.invert() ... -- IPaint
    */
 
   // returns the color of this paint
