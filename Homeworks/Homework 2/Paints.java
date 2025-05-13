@@ -396,30 +396,55 @@ class ExamplesPaint {
   IPaint darkKhaki = new Combo("dark khaki", new Darken(khaki));
   IPaint lightPurple = new Combo("light purple", new Brighten(purple));
 
-  IPaint darkGreen = new Combo("dark green", new Darken(green));
-  IPaint brown = new Combo("brown", new Blend(darkGreen, red));
-  IPaint bronze = new Combo("bronze", new Brighten(brown));
-  IMixture darkPurpleM = new Darken(purple);
-  IMixture brightOrangeM = new Brighten(bronze);
-  IMixture coralM = new Blend(pink, khaki);
-  IPaint brightOrange = new Combo("bright orange", new Brighten(bronze));
-
-  // Test getFinalColor
+  // Test getFinalColor()
   boolean testGetFinalColor(Tester t) {
-    return t.checkExpect(pink.getFinalColor(), new Color(181, 90, 90));
+    // Test a solid color
+    return t.checkExpect(red.getFinalColor(), new Color(255, 0, 0))
+
+        // Test simple blend (Purple is blend of red and blue)
+        && t.checkExpect(purple.getFinalColor(), new Color(127, 0, 127))
+
+        // Test darkened color
+        && t.checkExpect(darkPurple.getFinalColor(), purple.getFinalColor().darker())
+
+        // Test brightened color
+        && t.checkExpect(yellow.getFinalColor(), khaki.getFinalColor().brighter())
+
+        // Test complex blend (mauve is blend of purple and khaki)
+        && t.checkExpect(mauve.getFinalColor(), new Color(127, 63, 63))
+
+        // Test brightened complex blend (pink is brightened mauve)
+        && t.checkExpect(pink.getFinalColor(), mauve.getFinalColor().brighter())
+
+        // Test deeply nested combination (coral is blend of pink and khaki)
+        && t.checkExpect(coral.getFinalColor(),
+            new Color((pink.getFinalColor().getRed() + khaki.getFinalColor().getRed()) / 2,
+                (pink.getFinalColor().getGreen() + khaki.getFinalColor().getGreen()) / 2,
+                (pink.getFinalColor().getBlue() + khaki.getFinalColor().getBlue()) / 2));
   }
 
-  // test the method countMixes for the interface IPaint
-  boolean testIPaintCountMixes(Tester t) {
-    return t.checkExpect(this.darkPurple.countMixes(), 2)
-        && t.checkExpect(this.brightOrange.countMixes(), 4)
-        && t.checkExpect(this.pink.countMixes(), 4);
+  boolean testCountPaints(Tester t) {
+    // Test solid paints (each should count as 1)
+    return t.checkExpect(red.countPaints(), 1)
+
+        // Test simple blends (purple is blend of red and blue: 1+1=2)
+        && t.checkExpect(purple.countPaints(), 2)
+        && t.checkExpect(khaki.countPaints(), 2)
+
+        // Test darkened (darkPurple is purple + black: 2+1=3)
+        // Remember: darkening adds a solid black paint
+        && t.checkExpect(darkPurple.countPaints(), 3)
+
+        // Test brightened (yellow is khaki + white: 2+1=3)
+        // Remember: brightening adds a solid white paint
+        && t.checkExpect(yellow.countPaints(), 3)
+        && t.checkExpect(mauve.countPaints(), 4)
+
+        // Test brightened complex blend (pink is brightened mauve: 4+1=5)
+        && t.checkExpect(pink.countPaints(), 5)
+
+        // Test deeply nested combinations (coral is blend of pink and khaki: 5+2=7)
+        && t.checkExpect(coral.countPaints(), 7);
   }
 
-  // test the method countMixes for the interface IMixture
-  boolean testIMixtureCountMixes(Tester t) {
-    return t.checkExpect(this.darkPurpleM.countMixes(), 2)
-        && t.checkExpect(this.brightOrangeM.countMixes(), 4)
-        && t.checkExpect(this.coralM.countMixes(), 6);
-  }
 }
