@@ -18,10 +18,11 @@ interface ILoString {
   // returns the lists interleaved
   ILoString interleave(ILoString other);
 
-  // merges this list with another
+  // returns the merged sorted list
   ILoString merge(ILoString other);
 
-  ILoString mergeHelper(ConsLoString other);
+  // helps return the merged sorted list
+  ILoString mergeHelper(String str, ILoString other);
 
   // to check if the list is a doubled list
   boolean isDoubledList();
@@ -105,7 +106,7 @@ class MtLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -117,7 +118,7 @@ class MtLoString implements ILoString {
     return other;
   }
 
-  // merging with empty list returns the other list
+  // returns the merged sorted list
   public ILoString merge(ILoString other) {
     /*
      * METHOD TEMPLATE: everything in the class template for MtLoString, plus
@@ -132,7 +133,7 @@ class MtLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -144,9 +145,31 @@ class MtLoString implements ILoString {
     return other;
   }
 
-  // merging a nonempty list with empty list returns the nonempty list
-  public ILoString mergeHelper(ConsLoString other) {
-    return other;
+  // helps return the merged sorted list
+  public ILoString mergeHelper(String str, ILoString other) {
+    /*
+     * METHOD TEMPLATE: everything in the class template for MtLoString, plus
+     *
+     * PARAMETERS:
+     * ... other ... -- ILoString
+     *
+     * METHODS ON/OF/FOR PARAMETERS:
+     * ... other.combine() ... -- String
+     * ... other.isSorted() ... -- boolean
+     * ... other.isSortedHelp(String) ... -- boolean
+     * ... other.sublist(int, int) ... -- ILoString
+     * ... other.interleave(ILoString) ... -- ILoString
+     * ... other.merge(ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
+     * ... other.isDoubledList() ... -- boolean
+     * ... other.isDoubledListHelp(String) ... -- boolean
+     * ... other.isPalindromeList() ... -- boolean
+     * ... other.length() ... -- int
+     * ... other.reverse() ... -- ILoString
+     * ... other.reverseHelp() ... -- ILoString
+     * 
+     */
+    return new ConsLoString(str, other);
   }
 
   // to check if the list is a doubled list
@@ -159,6 +182,7 @@ class MtLoString implements ILoString {
     return false;
   }
 
+  // to check if the list is a palindrome
   public boolean isPalindromeList() {
     return true;
   }
@@ -183,7 +207,7 @@ class MtLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -281,7 +305,7 @@ class ConsLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -293,10 +317,10 @@ class ConsLoString implements ILoString {
     return new ConsLoString(this.first, other.interleave(this.rest));
   }
 
-  // merges this non-empty list with another
+  // returns the merged sorted list
   public ILoString merge(ILoString other) {
     /*
-     * METHOD TEMPLATE: everything in the class template for MtLoString, plus
+     * METHOD TEMPLATE: everything in the class template for ConsLoString, plus
      *
      * PARAMETERS:
      * ... other ... -- ILoString
@@ -308,7 +332,7 @@ class ConsLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -317,21 +341,46 @@ class ConsLoString implements ILoString {
      * ... other.reverseHelp() ... -- ILoString
      * 
      */
-    return other.mergeHelper(this); // double dispatch
+    return other.mergeHelper(this.first, this.rest);
   }
 
-  // merges a non-empty list with another non-empty list
-  public ILoString mergeHelper(ConsLoString that) {
-    if (this.first.toLowerCase().compareTo(that.first.toLowerCase()) <= 0) {
-      return new ConsLoString(this.first, this.rest.merge(that));
+  // helps return the merged sorted list
+  public ILoString mergeHelper(String str, ILoString other) {
+    /*
+     * METHOD TEMPLATE: everything in the class template for ConsLoString, plus
+     *
+     * PARAMETERS:
+     * ... other ... -- ILoString
+     *
+     * METHODS ON/OF/FOR PARAMETERS:
+     * ... other.combine() ... -- String
+     * ... other.isSorted() ... -- boolean
+     * ... other.isSortedHelp(String) ... -- boolean
+     * ... other.sublist(int, int) ... -- ILoString
+     * ... other.interleave(ILoString) ... -- ILoString
+     * ... other.merge(ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
+     * ... other.isDoubledList() ... -- boolean
+     * ... other.isDoubledListHelp(String) ... -- boolean
+     * ... other.isPalindromeList() ... -- boolean
+     * ... other.length() ... -- int
+     * ... other.reverse() ... -- ILoString
+     * ... other.reverseHelp() ... -- ILoString
+     * 
+     */
+
+    if (this.first.compareToIgnoreCase(str) <= 0) {
+      return new ConsLoString(this.first, this.rest.mergeHelper(str, other));
     }
-    return new ConsLoString(that.first, this.merge(that.rest));
+    return (new ConsLoString(str, other)).mergeHelper(this.first, this.rest);
   }
 
+  // to check if the list is a doubled list
   public boolean isDoubledList() {
     return this.rest.isDoubledListHelper(this.first);
   }
 
+  // helper for doubled list
   public boolean isDoubledListHelper(String prev) {
     if (this.first.equals(prev)) {
       return this.rest.isDoubledList();
@@ -339,6 +388,7 @@ class ConsLoString implements ILoString {
     return false;
   }
 
+  // to check if the list is a palindrome
   public boolean isPalindromeList() {
     return this.reverse().interleave(this).isDoubledList();
   }
@@ -363,7 +413,7 @@ class ConsLoString implements ILoString {
      * ... other.sublist(int, int) ... -- ILoString
      * ... other.interleave(ILoString) ... -- ILoString
      * ... other.merge(ILoString) ... -- ILoString
-     * ... other.mergeHelp(String, ILoString) ... -- ILoString
+     * ... other.mergeHelper(String, ILoString) ... -- ILoString
      * ... other.isDoubledList() ... -- boolean
      * ... other.isDoubledListHelp(String) ... -- boolean
      * ... other.isPalindromeList() ... -- boolean
@@ -447,7 +497,7 @@ class ExamplesStrings {
   }
 
   // tests for mergeHelper
-  boolean testILoStringMergeHelper(Tester t) {
+  boolean testILoStringmergeHelper(Tester t) {
     return true;
   }
 
@@ -507,7 +557,8 @@ class ExamplesStrings {
   boolean testReverse(Tester t) {
     return t.checkExpect(this.mary.reverse(),
         new ConsLoString("lamb.", new ConsLoString("little ",
-            new ConsLoString("a ", new ConsLoString("had ", new ConsLoString("Mary ", new MtLoString()))))))
+            new ConsLoString("a ", new ConsLoString("had ",
+                new ConsLoString("Mary ", new MtLoString()))))))
         && t.checkExpect(this.emptyList.reverse(), this.emptyList)
         && t.checkExpect(this.sortedA.reverse(),
             new ConsLoString("e", new ConsLoString("d", new ConsLoString("c",
@@ -518,7 +569,8 @@ class ExamplesStrings {
   boolean testReverseAcc(Tester t) {
     return t.checkExpect(this.mary.reverseAcc(new MtLoString()),
         new ConsLoString("lamb.", new ConsLoString("little ",
-            new ConsLoString("a ", new ConsLoString("had ", new ConsLoString("Mary ", new MtLoString()))))))
+            new ConsLoString("a ", new ConsLoString("had ",
+                new ConsLoString("Mary ", new MtLoString()))))))
         && t.checkExpect(this.emptyList.reverseAcc(new MtLoString()), this.emptyList)
         && t.checkExpect(this.sortedA.reverseAcc(new MtLoString()),
             new ConsLoString("e", new ConsLoString("d", new ConsLoString("c",

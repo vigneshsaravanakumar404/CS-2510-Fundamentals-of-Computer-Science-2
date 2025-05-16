@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Java with tester.jar",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "cls && cd \"C:\\Users\\Vigne\\OneDrive - Northeastern University\\Documents\\Programing Master\\Computer Science Classes\\CS 2510\\Homeworks\\Homework 3\" && javac -cp .;tester.jar Strings.java && java -cp .;tester.jar tester.Main ExamplesStrings"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

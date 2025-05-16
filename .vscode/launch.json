@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Java with tester.jar",
+      "type": "java",
+      "request": "launch",
+      "mainClass": "ExamplesStrings",
+      "vmArgs": "-cp .;tester.jar",
+      "console": "integratedTerminal"
+    }
+  ]
+}
