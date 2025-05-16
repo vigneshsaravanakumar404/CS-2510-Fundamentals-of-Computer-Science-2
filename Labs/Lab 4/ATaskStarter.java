@@ -19,23 +19,24 @@ class Group {
     this.tasks = tasks;
   }
 
-  /* CLASS TEMPLATE
+  /*
+   * CLASS TEMPLATE
    * 
    * FIELDS:
-   * ... this.title ...                      -- String
-   * ... this.tasks ...                      -- ILoTask
+   * ... this.title ... -- String
+   * ... this.tasks ... -- ILoTask
    * 
    * METHODS:
-   * ... this.rotate() ...                   -- Group
-   * ... this.flip() ...                     -- Group
-   * ... this.draw() ...                     -- WorldImage
-   * ... this.haveWorkedWith() ... 			 -- boolean
+   * ... this.rotate() ... -- Group
+   * ... this.flip() ... -- Group
+   * ... this.draw() ... -- WorldImage
+   * ... this.haveWorkedWith() ... -- boolean
    * 
    * METHODS ON/OF/FOR FIELDS:
-   * ... this.tasks.draw() ...               -- WorldImage
-   * ... this.tasks.flipFirst() ...          -- ILoTask
-   * ... this.tasks.rotate() ...             -- ILoTask
-   * ... this.tasks.moveToEnd(ITask) ...     -- ILoTask
+   * ... this.tasks.draw() ... -- WorldImage
+   * ... this.tasks.flipFirst() ... -- ILoTask
+   * ... this.tasks.rotate() ... -- ILoTask
+   * ... this.tasks.moveToEnd(ITask) ... -- ILoTask
    * ... this.tasks.haveWorkedWith(String)... -- boolean
    */
 
@@ -53,12 +54,11 @@ class Group {
   WorldImage draw() {
     return this.tasks.draw();
   }
-  
+
   boolean haveWorkedWith(String name) {
-	  return this.tasks.haveWorkedWith(name);
+    return this.tasks.haveWorkedWith(name);
   }
 }
-
 
 // represents the different kinds of class tasks
 interface ITask {
@@ -67,120 +67,118 @@ interface ITask {
 
   // draws this task as text
   WorldImage draw();
-  
+
   // calculates the number of days overdue
   int daysOverdue(int d);
-  
+
   // calculates the number of days overdue
   public boolean isOverdue(int d);
-  
+
   // returns the deduction
   public int computePercentDeduction(int d);
-  
+
   // returns if the given name has worked with the partner in the task
   public boolean haveWorkedWith(String name);
-  
-}
-
-abstract class ATask implements ITask{
-	String description;
-	boolean isDone;
-	int dateCreated;
-	
-	ATask(String description, boolean isDone, int dateCreated){
-		this.description = description;
-		this.isDone = isDone;
-		this.dateCreated = dateCreated;
-	};
-	/* CLASS TEMPLATE
-	 * 
-	 * FIELDS:
-	 * ... this.description ...                 -- String
-	 * ... this.isDone ...                      -- boolean
-	 * ... this.dateCreated ...                 -- int
-	 * 
-	 * METHODS:
-	 * ... this.draw() ...                     -- WorldImage
-	 * ... this.drawCheckbox() ...             -- WorldImage
-	 * ... this.daysOverdue() ...              -- int
-	 * ... this.isOverdue() ...                -- boolean
-	 * ... this.computePercentDeduction() ...  -- int
-	 * ... this.haveWorkedWith(String n) ...   -- boolean
-	 */
-		    
-	// draw this task as text
-    public WorldImage draw() {
-      WorldImage bg = new RectangleImage(300, 200, "solid", Color.cyan);
-      bg = new OverlayImage(new TextImage(this.description, 20, Color.black), bg);
-      bg = new OverlayOffsetImage(this.drawCheckbox(), 0, -60, bg);
-      return bg;
-    }
-    
-    // draw the check box for this task
-    public WorldImage drawCheckbox() {
-      if (this.isDone) {
-        return new RectangleImage(20, 20, "solid", Color.black);
-      }
-      else {
-        return new RectangleImage(20, 20, "outline", Color.black);
-      }
-    }
-	
- 	// returns if the task is overdue
-    public boolean isOverdue(int d) {
-        return !this.isDone && daysOverdue(d) > 0;
-    }
-
-    // returns the number of days the task is over due
-    public int daysOverdue(int d) {
-        if (this.isDone) {
-            return 0;
-        }
-        return d - this.dateCreated - 7;
-    }
-
-    // returns the deduction
-    public int computePercentDeduction(int d) {
-        if (!this.isOverdue(d)) {
-            return 0;
-        }
-        return this.daysOverdue(d) * 2;
-    }
-    
-    // returns if they've worked with that name
-    public boolean haveWorkedWith(String name) {
-  	  return false;
-    }
 
 }
 
+abstract class ATask implements ITask {
+  String description;
+  boolean isDone;
+  int dateCreated;
 
+  ATask(String description, boolean isDone, int dateCreated) {
+    this.description = description;
+    this.isDone = isDone;
+    this.dateCreated = dateCreated;
+  };
+  /*
+   * CLASS TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.description ... -- String
+   * ... this.isDone ... -- boolean
+   * ... this.dateCreated ... -- int
+   * 
+   * METHODS:
+   * ... this.draw() ... -- WorldImage
+   * ... this.drawCheckbox() ... -- WorldImage
+   * ... this.daysOverdue() ... -- int
+   * ... this.isOverdue() ... -- boolean
+   * ... this.computePercentDeduction() ... -- int
+   * ... this.haveWorkedWith(String n) ... -- boolean
+   */
+
+  // draw this task as text
+  public WorldImage draw() {
+    WorldImage bg = new RectangleImage(300, 200, "solid", Color.cyan);
+    bg = new OverlayImage(new TextImage(this.description, 20, Color.black), bg);
+    bg = new OverlayOffsetImage(this.drawCheckbox(), 0, -60, bg);
+    return bg;
+  }
+
+  // draw the check box for this task
+  public WorldImage drawCheckbox() {
+    if (this.isDone) {
+      return new RectangleImage(20, 20, "solid", Color.black);
+    } else {
+      return new RectangleImage(20, 20, "outline", Color.black);
+    }
+  }
+
+  // returns if the task is overdue
+  public boolean isOverdue(int d) {
+    return !this.isDone && daysOverdue(d) > 0;
+  }
+
+  // returns the number of days the task is over due
+  public int daysOverdue(int d) {
+    if (this.isDone) {
+      return 0;
+    }
+    return d - this.dateCreated - 7;
+  }
+
+  // returns the deduction
+  public int computePercentDeduction(int d) {
+    if (!this.isOverdue(d)) {
+      return 0;
+    }
+    return this.daysOverdue(d) * 2;
+  }
+
+  // returns if they've worked with that name
+  public boolean haveWorkedWith(String name) {
+    return false;
+  }
+
+}
 
 // represents a homework task
 class HomeworkTask extends ATask {
   String partnerName;
-  
 
   HomeworkTask(String description, boolean isDone, int dateCreated, String partnerName) {
-	super(description, isDone, dateCreated);
+    super(description, isDone, dateCreated);
     this.partnerName = partnerName;
   }
 
-  /* CLASS TEMPLATE
+  /*
+   * CLASS TEMPLATE
    * 
    * FIELDS:
-   * ... this.description ...                    -- String
-   * ... this.isDone ...                         -- boolean
-   * ... this.dateCreated ...                    -- int
-   * ... this.partnerName ...                    -- String
+   * ... this.description ... -- String
+   * ... this.isDone ... -- boolean
+   * ... this.dateCreated ... -- int
+   * ... this.partnerName ... -- String
    * 
    * METHODS:
-   * ... this.flip() ...                         -- ITask
-   * ... this.draw() ...                         -- WorldImage
-   * ... this.drawCheckbox() ...                 -- WorldImage
-   * ... this.daysOverdue(int d) ... 			-- int
-   * ... this.isOverdue(int d) ...				-- boolean
-   * ... this.computePercentDeduction(int d)	  -- int
+   * ... this.flip() ... -- ITask
+   * ... this.draw() ... -- WorldImage
+   * ... this.drawCheckbox() ... -- WorldImage
+   * ... this.daysOverdue(int d) ... -- int
+   * ... this.isOverdue(int d) ... -- boolean
+   * ... this.computePercentDeduction(int d) -- int
    * 
    */
 
@@ -188,20 +186,20 @@ class HomeworkTask extends ATask {
   public ITask flip() {
     return new HomeworkTask(this.description, !this.isDone, this.dateCreated, this.partnerName);
   }
-  
+
   // returns the deduction
   @Override
   public int computePercentDeduction(int d) {
     if (!this.isOverdue(d)) {
-    	return 0;
+      return 0;
     }
-  	return this.daysOverdue(d) * 10;
+    return this.daysOverdue(d) * 10;
   }
-  
+
   // returns if the given name has worked with this partner
   @Override
   public boolean haveWorkedWith(String name) {
-	  return this.partnerName.equals(name);
+    return this.partnerName.equals(name);
   }
 }
 
@@ -214,55 +212,55 @@ class LabTask extends ATask {
     this.partnerName = partnerName;
   }
 
- /* CLASS TEMPLATE
-  * 
-  * FIELDS:
-  * ... this.description ...                    -- String
-  * ... this.isDone ...                         -- boolean
-  * ... this.dateCreated ...                    -- int
-  * ... this.partnerName ...                    -- String
-  * 
-  * METHODS:
-  * ... this.flip() ...                         -- ITask
-  * ... this.draw() ...                         -- WorldImage
-  * ... this.drawCheckbox() ...                 -- WorldImage
-  * ... this.daysOverdue(int d) ... 			-- int
-  * ... this.isOverdue(int d) ...				-- boolean
-  * ... this.computePercentDeduction(int d)	    -- int
-  * 
-  */
+  /*
+   * CLASS TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.description ... -- String
+   * ... this.isDone ... -- boolean
+   * ... this.dateCreated ... -- int
+   * ... this.partnerName ... -- String
+   * 
+   * METHODS:
+   * ... this.flip() ... -- ITask
+   * ... this.draw() ... -- WorldImage
+   * ... this.drawCheckbox() ... -- WorldImage
+   * ... this.daysOverdue(int d) ... -- int
+   * ... this.isOverdue(int d) ... -- boolean
+   * ... this.computePercentDeduction(int d) -- int
+   * 
+   */
 
   // flip the completeness of this task
   public ITask flip() {
     return new LabTask(this.description, !this.isDone, this.dateCreated, this.partnerName);
   }
-  
 
 }
 
 // represents an in-class task
 class InClassTask extends ATask {
 
-
   InClassTask(String d, boolean isDone, int dateCreated) {
-	  super(d, isDone, dateCreated);
+    super(d, isDone, dateCreated);
   }
 
-  /* CLASS TEMPLATE
+  /*
+   * CLASS TEMPLATE
    * 
    * FIELDS:
-   * ... this.description ...                    -- String
-   * ... this.isDone ...                         -- boolean
-   * ... this.dateCreated ...                    -- int
-   * ... this.partnerName ...                    -- String
+   * ... this.description ... -- String
+   * ... this.isDone ... -- boolean
+   * ... this.dateCreated ... -- int
+   * ... this.partnerName ... -- String
    * 
    * METHODS:
-   * ... this.flip() ...                         -- ITask
-   * ... this.draw() ...                         -- WorldImage
-   * ... this.drawCheckbox() ...                 -- WorldImage
-   * ... this.daysOverdue(int d) ... 			-- int
-   * ... this.isOverdue(int d) ...				-- boolean
-   * ... this.computePercentDeduction(int d)	    -- int
+   * ... this.flip() ... -- ITask
+   * ... this.draw() ... -- WorldImage
+   * ... this.drawCheckbox() ... -- WorldImage
+   * ... this.daysOverdue(int d) ... -- int
+   * ... this.isOverdue(int d) ... -- boolean
+   * ... this.computePercentDeduction(int d) -- int
    * 
    */
 
@@ -270,23 +268,22 @@ class InClassTask extends ATask {
   public ITask flip() {
     return new InClassTask(this.description, !this.isDone, this.dateCreated);
   }
-  
+
   // returns the number of days overdue
   @Override
   public int daysOverdue(int d) {
-  	if (this.isDone) {
-  		return 0;
-  	}
-  	return d - this.dateCreated - 1;
+    if (this.isDone) {
+      return 0;
+    }
+    return d - this.dateCreated - 1;
   }
-  
+
 }
-
-
 
 // represents a list of task
 interface ILoTask {
-  // draw the first task's description as text or "No tasks to do" for this ILoTask
+  // draw the first task's description as text or "No tasks to do" for this
+  // ILoTask
   WorldImage draw();
 
   // flips the first task's completeness for this ILoTask
@@ -297,7 +294,7 @@ interface ILoTask {
 
   // moves the given task to the end of this ILoTask
   ILoTask moveToEnd(ITask t);
-  
+
   boolean haveWorkedWith(String n);
 
 }
@@ -309,16 +306,17 @@ class MtLoTask implements ILoTask {
   MtLoTask() {
   }
 
-  /* CLASS TEMPLATE
+  /*
+   * CLASS TEMPLATE
    * 
    * FIELDS:
    * ... none ...
    * 
    * METHODS:
-   * ... this.draw() ...               -- WorldImage
-   * ... this.flipFirst() ...          -- ILoTask
-   * ... this.rotate() ...             -- ILoTask
-   * ... this.moveToEnd(ITask) ...     -- ILoTask
+   * ... this.draw() ... -- WorldImage
+   * ... this.flipFirst() ... -- ILoTask
+   * ... this.rotate() ... -- ILoTask
+   * ... this.moveToEnd(ITask) ... -- ILoTask
    * ... this.haveWorkedWith(Stirng) ...-- Boolean
    * 
    */
@@ -344,21 +342,21 @@ class MtLoTask implements ILoTask {
     /*
      * METHOD TEMPLATE: everything in the class template for ConsLoTask, plus
      *
-     * PARAMETERS: 
-     * ... t ...                                -- ITask
+     * PARAMETERS:
+     * ... t ... -- ITask
      *
-     * METHODS ON/OF/FOR PARAMETERS: 
-     * ... t.flip() ...                         -- ITask
-     * ... t.draw() ...                         -- WorldImage
-     * ... t.drawCheckbox() ...                 -- WorldImage
+     * METHODS ON/OF/FOR PARAMETERS:
+     * ... t.flip() ... -- ITask
+     * ... t.draw() ... -- WorldImage
+     * ... t.drawCheckbox() ... -- WorldImage
      * 
      */
     return new ConsLoTask(t, new MtLoTask());
   }
-  
+
   // returns if name has worked with this task
   public boolean haveWorkedWith(String n) {
-	  return false;
+    return false;
   }
 }
 
@@ -372,31 +370,32 @@ class ConsLoTask implements ILoTask {
     this.rest = rest;
   }
 
-  /* CLASS TEMPLATE
+  /*
+   * CLASS TEMPLATE
    * 
    * FIELDS:
-   * ... this.first ...                                -- ITask
-   * ... this.rest ...                                 -- ILoTask
+   * ... this.first ... -- ITask
+   * ... this.rest ... -- ILoTask
    * 
    * METHODS:
-   * ... this.draw() ...                               -- WorldImage
-   * ... this.flipFirst() ...                          -- ILoTask
-   * ... this.rotate() ...                             -- ILoTask
-   * ... this.moveToEnd(ITask) ...                     -- ILoTask
+   * ... this.draw() ... -- WorldImage
+   * ... this.flipFirst() ... -- ILoTask
+   * ... this.rotate() ... -- ILoTask
+   * ... this.moveToEnd(ITask) ... -- ILoTask
    * ... this.haveWorkedWith(Stirng) ...-- Boolean
    * 
    * METHODS ON/OF/FOR FIELDS:
-   * ... this.first.flip() ...                         -- ITask
-   * ... this.first.draw() ...                         -- WorldImage
-   * ... this.first.drawCheckbox() ...                 -- WorldImage
+   * ... this.first.flip() ... -- ITask
+   * ... this.first.draw() ... -- WorldImage
+   * ... this.first.drawCheckbox() ... -- WorldImage
    * 
-   * ... this.rest.draw() ...                          -- WorldImage
-   * ... this.rest.flipFirst() ...                     -- ILoTask
-   * ... this.rest.rotate() ...                        -- ILoTask
-   * ... this.rest.moveToEnd(ITask) ...                -- ILoTask
-   * ... this.first.daysOverdue(int d) ... 			 -- int
-   * ... this.first.isOverdue(int d) ...				 -- boolean
-   * ... this.first.computePercentDeduction(int d)	 -- int
+   * ... this.rest.draw() ... -- WorldImage
+   * ... this.rest.flipFirst() ... -- ILoTask
+   * ... this.rest.rotate() ... -- ILoTask
+   * ... this.rest.moveToEnd(ITask) ... -- ILoTask
+   * ... this.first.daysOverdue(int d) ... -- int
+   * ... this.first.isOverdue(int d) ... -- boolean
+   * ... this.first.computePercentDeduction(int d) -- int
    */
 
   // draw the first task to do
@@ -419,19 +418,19 @@ class ConsLoTask implements ILoTask {
     /*
      * METHOD TEMPLATE: everything in the class template for ConsLoTask, plus
      *
-     * PARAMETERS: 
-     * ... t ...                               -- ITask
+     * PARAMETERS:
+     * ... t ... -- ITask
      *
-     * METHODS ON/OF/FOR PARAMETERS: 
-     * ... t.flip() ...                        -- ITask
-     * ... t.draw() ...                        -- WorldImage
-     * ... t.drawCheckbox() ...                -- WorldImage
+     * METHODS ON/OF/FOR PARAMETERS:
+     * ... t.flip() ... -- ITask
+     * ... t.draw() ... -- WorldImage
+     * ... t.drawCheckbox() ... -- WorldImage
      * 
      */
     return new ConsLoTask(this.first, this.rest.moveToEnd(t));
   }
-  
-  //returns if name has worked with this task
+
+  // returns if name has worked with this task
   public boolean haveWorkedWith(String n) {
     return this.first.haveWorkedWith(n) || this.rest.haveWorkedWith(n);
   }
@@ -455,11 +454,9 @@ class TaskWorld extends World {
   public World onKeyEvent(String key) {
     if (key.equals("right")) {
       return new TaskWorld(this.taskGroup.rotate());
-    }
-    else if (key.equals(" ")) {
+    } else if (key.equals(" ")) {
       return new TaskWorld(this.taskGroup.flip());
-    }
-    else
+    } else
       return this;
   }
 }
@@ -488,8 +485,7 @@ class Examples {
   Group tuesdayTaskGroup = new Group("Tuesday Plan", this.tuesdayToDoList);
   Group wednesdayTaskGroup = new Group("Wednesday Plan", this.wednesdayToDoList);
   Group none = new Group("finished everything", this.mt);
-  
-  
+
   // test ITask.flip()
   boolean testITaskFlip(Tester t) {
     return t.checkExpect(this.homework1.flip(), new HomeworkTask("Variables and Data Types", true, 14, "Megan"))
@@ -501,8 +497,8 @@ class Examples {
   // test Group.flip()
   boolean testGroupFlip(Tester t) {
     return t.checkExpect(this.none.flip(), this.none)
-        && t.checkExpect(this.mondayTaskGroup.flip(), 
-            new Group("Monday Plan", 
+        && t.checkExpect(this.mondayTaskGroup.flip(),
+            new Group("Monday Plan",
                 new ConsLoTask(new HomeworkTask("Variables and Data Types", true, 14, "Megan"),
                     new ConsLoTask(this.lab1, this.mt))))
         && t.checkExpect(this.tuesdayTaskGroup.flip().flip(), this.tuesdayTaskGroup);
@@ -511,8 +507,8 @@ class Examples {
   // test ILoTask.flipFirst()
   boolean testILoTaskFlipFirst(Tester t) {
     return t.checkExpect(this.mt.flipFirst(), this.mt)
-        && t.checkExpect(this.mondayToDoListRotated.flipFirst(), 
-            new ConsLoTask(new LabTask("Calculator Program", true, 15, "Susan"), 
+        && t.checkExpect(this.mondayToDoListRotated.flipFirst(),
+            new ConsLoTask(new LabTask("Calculator Program", true, 15, "Susan"),
                 new ConsLoTask(this.homework1, this.mt)));
   }
 
@@ -543,39 +539,39 @@ class Examples {
     double tickRate = .1;
     return world.bigBang(worldWidth, worldHeight, tickRate);
   }
-  
+
   // test daysOverdue
   boolean testDaysOverDue(Tester t) {
-	  return t.checkExpect(homework1.daysOverdue(21), 0)
-			  && t.checkExpect(homework1.daysOverdue(22), 1)
-			  && t.checkExpect(homework2.daysOverdue(100), 0)
-			  && t.checkExpect(inClass1.daysOverdue(16), 0)
-			  && t.checkExpect(inClass1.daysOverdue(17), 1);
+    return t.checkExpect(homework1.daysOverdue(21), 0)
+        && t.checkExpect(homework1.daysOverdue(22), 1)
+        && t.checkExpect(homework2.daysOverdue(100), 0)
+        && t.checkExpect(inClass1.daysOverdue(16), 0)
+        && t.checkExpect(inClass1.daysOverdue(17), 1);
   }
-  
-//test isOverdue
-boolean testIsOverdue(Tester t) {
-   return t.checkExpect(homework1.isOverdue(20), false) // not overdue yet (created day 14 + 7 days = 21)
-       && t.checkExpect(homework1.isOverdue(21), false) // exactly on due date
-       && t.checkExpect(homework1.isOverdue(22), true)  // 1 day overdue
-       && t.checkExpect(homework2.isOverdue(30), false) // already done, so not overdue
-       && t.checkExpect(lab1.isOverdue(21), false)      // not overdue (created day 15 + 7 days = 22)
-       && t.checkExpect(lab1.isOverdue(22), false); // already done, so not overdue
-}
 
-//test computePercentDeduction
-boolean testComputePercentDeduction(Tester t) {
-   return t.checkExpect(homework1.computePercentDeduction(20), 0)   // not overdue yet
-       && t.checkExpect(homework1.computePercentDeduction(21), 0)   // on due date
-       && t.checkExpect(homework1.computePercentDeduction(22), 10)  // 1 day overdue (10% per day)
-       && t.checkExpect(homework1.computePercentDeduction(23), 20);   // already done, so no deduction
-}
+  // test isOverdue
+  boolean testIsOverdue(Tester t) {
+    return t.checkExpect(homework1.isOverdue(20), false) // not overdue yet (created day 14 + 7 days = 21)
+        && t.checkExpect(homework1.isOverdue(21), false) // exactly on due date
+        && t.checkExpect(homework1.isOverdue(22), true) // 1 day overdue
+        && t.checkExpect(homework2.isOverdue(30), false) // already done, so not overdue
+        && t.checkExpect(lab1.isOverdue(21), false) // not overdue (created day 15 + 7 days = 22)
+        && t.checkExpect(lab1.isOverdue(22), false); // already done, so not overdue
+  }
 
-//test haveWorkedWith
-boolean testHaveWorkedWith(Tester t) {
-   return t.checkExpect(mondayTaskGroup.haveWorkedWith("Megan"), true)    // Megan is a partner in homework1  // Susan is a partner in lab1
-       && t.checkExpect(mondayTaskGroup.haveWorkedWith("Bob"), false)     // Bob is not a partner in this group
-       && t.checkExpect(tuesdayTaskGroup.haveWorkedWith("Steven"), true);               // Empty group has no partners
-}
-}
+  // test computePercentDeduction
+  boolean testComputePercentDeduction(Tester t) {
+    return t.checkExpect(homework1.computePercentDeduction(20), 0) // not overdue yet
+        && t.checkExpect(homework1.computePercentDeduction(21), 0) // on due date
+        && t.checkExpect(homework1.computePercentDeduction(22), 10) // 1 day overdue (10% per day)
+        && t.checkExpect(homework1.computePercentDeduction(23), 20); // already done, so no deduction
+  }
 
+  // test haveWorkedWith
+  boolean testHaveWorkedWith(Tester t) {
+    return t.checkExpect(mondayTaskGroup.haveWorkedWith("Megan"), true) // Megan is a partner in homework1 // Susan is a
+                                                                        // partner in lab1
+        && t.checkExpect(mondayTaskGroup.haveWorkedWith("Bob"), false) // Bob is not a partner in this group
+        && t.checkExpect(tuesdayTaskGroup.haveWorkedWith("Steven"), true); // Empty group has no partners
+  }
+}
