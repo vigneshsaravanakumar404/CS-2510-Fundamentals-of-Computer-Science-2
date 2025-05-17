@@ -50,8 +50,6 @@ class MtLoString implements ILoString {
 
   /*
    * TEMPLATE
-   * FIELDS:
-   * none
    * 
    * METHODS:
    * ... this.combine() ... -- String
@@ -67,8 +65,6 @@ class MtLoString implements ILoString {
    * ... this.reverse() ... -- ILoString
    * ... this.reverseAcc(ILoString) ... -- ILoString
    * 
-   * METHODS FOR FIELDS:
-   * none
    */
 
   // combine all Strings in this list into one
@@ -94,12 +90,12 @@ class MtLoString implements ILoString {
   // returns a new list that is the interleaving of this list and the other list
   public ILoString interleave(ILoString other) {
     /*
-     * METHOD TEMPLATE: everything in the class template for MtLoString, plus
+     * METHOD TEMPLATE: everything in the class template for MtLoString, plus below
      *
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -126,7 +122,7 @@ class MtLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -153,7 +149,7 @@ class MtLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -193,14 +189,14 @@ class MtLoString implements ILoString {
   }
 
   // reverse helper with accumulator
-  public ILoString reverseAcc(ILoString acc) {
+  public ILoString reverseAcc(ILoString other) {
     /*
      * METHOD TEMPLATE: everything in the class template for MtLoString, plus
      *
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -216,7 +212,7 @@ class MtLoString implements ILoString {
      * ... other.reverseHelp() ... -- ILoString
      * 
      */
-    return acc;
+    return other;
   }
 
 }
@@ -298,7 +294,7 @@ class ConsLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -325,7 +321,7 @@ class ConsLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -352,7 +348,7 @@ class ConsLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
@@ -406,7 +402,7 @@ class ConsLoString implements ILoString {
      * PARAMETERS:
      * ... other ... -- ILoString
      *
-     * METHODS ON/OF/FOR PARAMETERS:
+     * METHODS OF PARAMETERS:
      * ... other.combine() ... -- String
      * ... other.isSorted() ... -- boolean
      * ... other.isSortedHelp(String) ... -- boolean
