@@ -489,12 +489,25 @@ class ExamplesStrings {
                 new ConsLoString("a",
                     new ConsLoString("b", new ConsLoString("c", new ConsLoString("c",
                         new ConsLoString("c", new ConsLoString("d", new ConsLoString("e",
-                            new ConsLoString("e", new ConsLoString("e", new MtLoString())))))))))));
+                            new ConsLoString("e", new ConsLoString("e", new MtLoString())))))))))))
+        && t.checkExpect(this.sortedA.merge(this.emptyList), this.sortedA)
+        && t.checkExpect(this.emptyList.merge(this.sortedA), this.sortedA)
+        && t.checkExpect(this.emptyList.merge(this.emptyList),
+            this.emptyList);
   }
 
   // tests for mergeHelper
   boolean testILoStringmergeHelper(Tester t) {
-    return true;
+    return t.checkExpect(this.sortedA.mergeHelper("a", this.sortedB),
+        new ConsLoString("a",
+            new ConsLoString("a",
+                new ConsLoString("a", new ConsLoString("b", new ConsLoString("c",
+                    new ConsLoString("c", new ConsLoString("c", new ConsLoString("d",
+                        new ConsLoString("e", new ConsLoString("e", new ConsLoString("e", new MtLoString()))))))))))))
+        && t.checkExpect(this.emptyList.mergeHelper("a", this.sortedB),
+            new ConsLoString("a", this.sortedB))
+        && t.checkExpect(this.sortedA.mergeHelper("a", this.emptyList),
+            new ConsLoString("a", this.sortedA));
   }
 
   // Tests for isDoubledList method
@@ -524,7 +537,17 @@ class ExamplesStrings {
 
   // tests for isDoubledListHelper method
   boolean testIsDoubledListHelper(Tester t) {
-    return true;
+    ILoString singleElement = new ConsLoString("hello", new MtLoString());
+    ILoString doubled = new ConsLoString("apple",
+        new ConsLoString("apple",
+            new ConsLoString("banana",
+                new ConsLoString("banana", new MtLoString()))));
+    ILoString notDoubled = new ConsLoString("apple",
+        new ConsLoString("orange", new MtLoString()));
+
+    return t.checkExpect(singleElement.isDoubledListHelper("hello"), true) &&
+        t.checkExpect(doubled.isDoubledListHelper("apple"), false) &&
+        t.checkExpect(notDoubled.isDoubledListHelper("apple"), false);
   }
 
   // Tests for isPalindromeList method
