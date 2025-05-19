@@ -14,12 +14,10 @@ interface IBeverage {
 
 }
 
+// Represents a drink you might get at a coffee shop
 abstract class ABeverage implements IBeverage {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   String variety;
-
   ILoString mixins;
 
   // the constructor
@@ -30,14 +28,17 @@ abstract class ABeverage implements IBeverage {
 
   /*
    * TEMPLATE
+   * 
    * FIELDS:
    * ... this.variety ... -- String
    * ... this.mixins ... -- ILoString
+   * 
    * METHODS:
    * ... this.isDecaf() ... -- boolean
    * ... this.containsIngredient(String) ... -- boolean
    * ... this.format() ... -- String
    * ... this.formatHelp(String, String) ... -- String
+   * 
    * METHODS FOR FIELDS:
    * ... this.mixins.containsString() ... -- boolean
    * ... this.mixins.format() ... -- String
@@ -59,8 +60,6 @@ abstract class ABeverage implements IBeverage {
 
 // Represents a beverage
 class BubbleTea extends ABeverage {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   int size;
 
@@ -69,6 +68,22 @@ class BubbleTea extends ABeverage {
     super(variety, mixins);
     this.size = size;
   }
+
+  /*
+   * TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.variety ... -- String
+   * ... this.mixins ... -- ILoString
+   * ... this.size ... -- int
+   * 
+   * METHODS:
+   * ... this.isDecaf() ... -- boolean
+   * ... this.containsIngredient(String) ... -- boolean
+   * ... this.format() ... -- String
+   * ... this.formatHelp(String, String) ... -- String
+   * 
+   */
 
   // return if the beverage is decaf
   public boolean isDecaf() {
@@ -87,12 +102,10 @@ class BubbleTea extends ABeverage {
   }
 }
 
+// represents a coffee beverage
 class Coffee extends ABeverage {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   String style;
-
   boolean isIced;
 
   // the constructor
@@ -101,6 +114,23 @@ class Coffee extends ABeverage {
     this.style = style;
     this.isIced = isIced;
   }
+
+  /*
+   * TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.variety ... -- String
+   * ... this.mixins ... -- ILoString
+   * ... this.style ... -- String
+   * ... this.isIced ... -- boolean
+   * 
+   * METHODS:
+   * ... this.isDecaf() ... -- boolean
+   * ... this.containsIngredient(String) ... -- boolean
+   * ... this.format() ... -- String
+   * ... this.formatHelp(String, String) ... -- String
+   * 
+   */
 
   // return if the beverage is decaf
   public boolean isDecaf() {
@@ -125,11 +155,8 @@ class Coffee extends ABeverage {
 
 // Represents a beverage
 class Milkshake extends ABeverage {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   String brandName;
-
   int size;
 
   // the constructor
@@ -138,6 +165,23 @@ class Milkshake extends ABeverage {
     this.brandName = brandName;
     this.size = size;
   }
+
+  /*
+   * TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.variety ... -- String
+   * ... this.mixins ... -- ILoString
+   * ... this.brandName ... -- String
+   * ... this.size ... -- int
+   * 
+   * METHODS:
+   * ... this.isDecaf() ... -- boolean
+   * ... this.containsIngredient(String) ... -- boolean
+   * ... this.format() ... -- String
+   * ... this.formatHelp(String, String) ... -- String
+   * 
+   */
 
   // return if the beverage is decaf
   public boolean isDecaf() {
@@ -156,9 +200,8 @@ class Milkshake extends ABeverage {
   }
 }
 
+// represents a list of strings
 interface ILoString {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   // return if the beverage contains the ingredient
   boolean containsIngredient(String ingredient);
@@ -167,13 +210,21 @@ interface ILoString {
   String format();
 }
 
+// represents an empty list of strings
 class MtLoString implements ILoString {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   // the constructor
   MtLoString() {
   }
+
+  /*
+   * TEMPLATE
+   * 
+   * METHODS:
+   * ... this.containsIngredient(String) ... -- boolean
+   * ... this.format() ... -- String
+   * 
+   */
 
   // return if the beverage is decaf
   public boolean containsIngredient(String ingredient) {
@@ -187,9 +238,8 @@ class MtLoString implements ILoString {
 
 }
 
+// represents a non-empty list of strings
 class ConsLoString implements ILoString {
-  // TODO: Template
-  // TODO: Purpose Statements
 
   String first;
   ILoString rest;
@@ -199,6 +249,24 @@ class ConsLoString implements ILoString {
     this.first = first;
     this.rest = rest;
   }
+
+  /*
+   * TEMPLATE
+   * 
+   * FIELDS:
+   * ... this.first ... -- String
+   * ... this.rest ... -- ILoString
+   * 
+   * 
+   * METHODS:
+   * ... this.containsIngredient(String) ... -- boolean
+   * ... this.format() ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.rest.containsIngredient() ... -- boolean
+   * ... this.rest.format() ... -- String
+   * 
+   */
 
   // return if the beverage is decaf
   public boolean containsIngredient(String ingredient) {
@@ -214,6 +282,7 @@ class ConsLoString implements ILoString {
   }
 }
 
+// Examples and tests for the beverages
 class ExamplesBeverages {
 
   IBeverage b1 = new BubbleTea("Black tea", new ConsLoString("boba",
@@ -244,8 +313,6 @@ class ExamplesBeverages {
         && t.checkExpect(this.b6.isDecaf(), true)
         && t.checkExpect(this.b7.isDecaf(), true)
         && t.checkExpect(this.b8.isDecaf(), true);
-
-    // TODO: include rooibos in the test cases
   }
 
   // test cases for the containsIngredient method
@@ -270,6 +337,6 @@ class ExamplesBeverages {
         && t.checkExpect(this.b6.format(), "16oz JPLicks mint-chip (with sprinkles)")
         && t.checkExpect(this.b7.format(), "16oz Rooibos (without mixins)")
         && t.checkExpect(this.b8.format(),
-            "20oz HaagenDazs chocolate (with whipped cream, cherry ,sprinkles)");
+            "20oz HaagenDazs chocolate (with whipped cream, cherry, sprinkles)");
   }
 }
