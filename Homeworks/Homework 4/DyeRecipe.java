@@ -140,6 +140,7 @@ class DyeRecipeTest {
   DyeRecipe recipe4 = new DyeRecipe(4.0, 8.0, 0.4, 0.5);
   DyeRecipe recipe5 = new DyeRecipe(6.0, 4.0, 0.4, 0.2);
   DyeRecipe recipe6 = new DyeRecipe(this.recipe1, new DyeRecipe(5.0, 10.0, 0.5, 0.5));
+  Utils utils = new Utils();
 
   // Test the 4-color constructor with valid inputs
   boolean testFourColorConstructorValid(Tester t) {
@@ -196,5 +197,53 @@ class DyeRecipeTest {
         && t.checkExpect(this.recipe4.sameRecipe(new DyeRecipe(4.0, 8.0, 0.4, 0.3)), false)
         && t.checkExpect(this.recipe4.sameRecipe(new DyeRecipe(4.0, 8.0, 0.4, 0.6)), false)
         && t.checkExpect(this.recipe4.sameRecipe(new DyeRecipe(4.0, 8.0, 0.4, 0.5)), true);
+  }
+
+  // Tests for checkRedPercentage
+  boolean testCheckRedPercentage(Tester t) {
+    return t.checkExpect(this.utils.checkRedPercentage(10.0), 10.0)
+        && t.checkExpect(this.utils.checkRedPercentage(0.0), 0.0)
+        && t.checkException(new IllegalArgumentException("Red must be greater than 0"), this.utils,
+            "checkRedPercentage", -1.0);
+  }
+
+  // Tests for checkBluePercentage
+  boolean testCheckBluePercentage(Tester t) {
+    return t.checkExpect(this.utils.checkBluePercentage(5.5), 5.5)
+        && t.checkExpect(this.utils.checkBluePercentage(0.0), 0.0)
+        && t.checkException(new IllegalArgumentException("Blue must be greater than 0"), this.utils,
+            "checkBluePercentage", -0.1);
+  }
+
+  // Tests for checkYellowPercentage
+  boolean testCheckYellowPercentage(Tester t) {
+    return t.checkExpect(this.utils.checkYellowPercentage(10.0, 1.0), 10.0)
+        && t.checkExpect(this.utils.checkYellowPercentage(5.0, 0.1), 5.0)
+        && t.checkException(
+            new IllegalArgumentException("If yellow present, blue must <= 1/10th of yellow"),
+            this.utils, "checkYellowPercentage", 5.0, 1.0);
+  }
+
+  // Tests for checkBlackPercentage
+  boolean testCheckBlackPercentage(Tester t) {
+    return t.checkExpect(this.utils.checkBlackPercentage(10.0, 10.0, 1.0, 1.0), 1.0)
+        && t.checkExpect(this.utils.checkBlackPercentage(0.01, 0.01, 0.01, 1.0), 1.0)
+        && t.checkException(new IllegalArgumentException("Black ratio constraint violated"),
+            this.utils, "checkBlackPercentage", 10.0, 10.0, 1.0, 5.0);
+  }
+
+  // Tests for withInTolerance
+  boolean testWithInTolerance(Tester t) {
+    return t.checkExpect(this.utils.withInTolerance(1.000, 1.0009), true) // within 0.001
+        && t.checkExpect(this.utils.withInTolerance(1.0, 1.0011), false) // slightly over tolerance
+        && t.checkExpect(this.utils.withInTolerance(2.0, 2.0), true); // exact match
+  }
+
+  // Tests for normalizeBlack
+  boolean testNormalizeBlack(Tester t) {
+    return t.checkExpect(this.utils.normalizeBlack(10.0, 20.0, 1.0, 1.0), 0.5)
+        && t.checkExpect(this.utils.normalizeBlack(10.0, 10.0, 1.0, 10.0),
+            0.05 * ((10.0 + 10.0 + 1.0) / 2))
+        && t.checkExpect(this.utils.normalizeBlack(2.0, 2.0, 2.0, 0.6), Math.min(0.3, 0.05 * 3.0));
   }
 }
