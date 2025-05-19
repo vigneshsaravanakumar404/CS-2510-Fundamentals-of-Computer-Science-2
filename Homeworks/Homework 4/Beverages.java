@@ -83,6 +83,11 @@ class BubbleTea extends ABeverage {
    * ... this.format() ... -- String
    * ... this.formatHelp(String, String) ... -- String
    * 
+   * METHODS FOR FIELDS:
+   * ... this.mixins.containsString() ... -- boolean
+   * ... this.mixins.format() ... -- String
+   * ... this.mixins.formatHelp() ... -- String
+   * 
    */
 
   // return if the beverage is decaf
@@ -130,6 +135,10 @@ class Coffee extends ABeverage {
    * ... this.format() ... -- String
    * ... this.formatHelp(String, String) ... -- String
    * 
+   * * METHODS FOR FIELDS:
+   * ... this.mixins.containsString() ... -- boolean
+   * ... this.mixins.format() ... -- String
+   * ... this.mixins.formatHelp() ... -- String
    */
 
   // return if the beverage is decaf
@@ -181,6 +190,11 @@ class Milkshake extends ABeverage {
    * ... this.format() ... -- String
    * ... this.formatHelp(String, String) ... -- String
    * 
+   * METHODS FOR FIELDS:
+   * ... this.mixins.containsString() ... -- boolean
+   * ... this.mixins.format() ... -- String
+   * ... this.mixins.formatHelp() ... -- String
+   * 
    */
 
   // return if the beverage is decaf
@@ -223,6 +237,11 @@ class MtLoString implements ILoString {
    * METHODS:
    * ... this.containsIngredient(String) ... -- boolean
    * ... this.format() ... -- String
+   * 
+   * METHODS FOR FIELDS:
+   * ... this.rest.containsString() ... -- boolean
+   * ... this.rest.format() ... -- String
+   * ... this.rest.formatHelp() ... -- String
    * 
    */
 
