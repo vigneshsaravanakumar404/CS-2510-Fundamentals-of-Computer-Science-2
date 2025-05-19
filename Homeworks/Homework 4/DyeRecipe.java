@@ -54,7 +54,7 @@ class Utils {
   }
 
   double normalizeBlack(double red, double yellow, double blue, double black) {
-    return Math.min(black / 2.0, 0.05 * ((red / 2.0) + (yellow / 2.0) + (blue / 2.0)));
+    return Math.min(black / 2, 0.05 * ((red / 2) + (yellow / 2) + (blue / 2)));
   }
 }
 
@@ -88,7 +88,7 @@ class DyeRecipe {
 
   // Constructor for 2 color recipe
   DyeRecipe(DyeRecipe d1, DyeRecipe d2) {
-    this((d1.red + d2.red) / 2.0, (d1.yellow + d2.yellow) / 2.0, (d1.blue + d2.blue) / 2.0,
+    this((d1.red + d2.red) / 2, (d1.yellow + d2.yellow) / 2, (d1.blue + d2.blue) / 2,
         new Utils().normalizeBlack(d1.red + d2.red, d1.yellow + d2.yellow,
             d1.blue + d2.blue, d1.black + d2.black));
   }
@@ -136,7 +136,7 @@ class DyeRecipeTest {
 
   DyeRecipe recipe1 = new DyeRecipe(10.0, 20.0, 1.0, 1.0);
   DyeRecipe recipe2 = new DyeRecipe(5.0, 10.0, 0.5);
-  DyeRecipe recipe3 = new DyeRecipe(5.0, 10.0, 2.0);
+  DyeRecipe recipe3 = new DyeRecipe(5.0, 10.0, 2);
   DyeRecipe recipe4 = new DyeRecipe(4.0, 8.0, 0.4, 0.5);
   DyeRecipe recipe5 = new DyeRecipe(6.0, 4.0, 0.4, 0.2);
   DyeRecipe recipe6 = new DyeRecipe(this.recipe1, new DyeRecipe(5.0, 10.0, 0.5, 0.5));
