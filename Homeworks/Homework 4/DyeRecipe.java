@@ -1,3 +1,5 @@
+import tester.Tester;
+
 // represents a dye recipe with 4 colors
 public class DyeRecipe {
   double red;
@@ -113,4 +115,75 @@ class Utils {
   boolean withInTolerance(double a, double b) {
     return Math.abs(a - b) < 0.001;
   }
+}
+
+class DyeRecipeTest {
+
+  DyeRecipe recipe1 = new DyeRecipe(10.0, 20.0, 1.0, 1.0);
+  DyeRecipe recipe2 = new DyeRecipe(5.0, 10.0, 0.5);
+  DyeRecipe recipe3 = new DyeRecipe(5.0, 10.0, 2.0);
+  DyeRecipe recipe4 = new DyeRecipe(4.0, 8.0, 0.4, 0.5);
+  DyeRecipe recipe5 = new DyeRecipe(6.0, 4.0, 0.4, 0.2);
+  DyeRecipe recipe6 = new DyeRecipe(this.recipe1, new DyeRecipe(5.0, 10.0, 0.5, 0.5));
+
+  // Test the 4-color constructor with valid inputs
+  boolean testFourColorConstructorValid(Tester t) {
+    return t.checkExpect(this.recipe1.red, 0.3125) &&
+        t.checkExpect(this.recipe1.yellow, 0.625) &&
+        t.checkExpect(this.recipe1.blue, 0.03125) &&
+        t.checkExpect(this.recipe1.black, 0.03125);
+  }
+
+  // Test the 4-color constructor with various invalid values
+  boolean testFourColorConstructorInvalidInputs(Tester t) {
+    return t.checkConstructorException(
+        new IllegalArgumentException("Red must be greater than 0"),
+        "DyeRecipe", -1.0, 10.0, 1.0, 0.5)
+        &&
+        t.checkConstructorException(
+            new IllegalArgumentException("Yellow must be greater than 0"),
+            "DyeRecipe", 10.0, -1.0, 1.0, 0.5)
+        &&
+        t.checkConstructorException(
+            new IllegalArgumentException("If yellow present, blue must <= 1/10th of yellow"),
+            "DyeRecipe", 10.0, 5.0, 1.0, 0.5)
+        &&
+        t.checkConstructorException(
+            new IllegalArgumentException("Blue must be greater than 0"),
+            "DyeRecipe", 10.0, 10.0, -1.0, 0.5)
+        &&
+        t.checkConstructorException(
+            new IllegalArgumentException("Black ratio constraint violated"),
+            "DyeRecipe", 10.0, 10.0, 1.0, 5.0);
+  }
+
+  // Test the 3-color constructor (with and without blue cap)
+  boolean testThreeColorConstructorCombined(Tester t) {
+    return t.checkExpect(this.recipe2.red, 5.0 / 16.275) &&
+        t.checkExpect(this.recipe2.yellow, 10.0 / 16.275) &&
+        t.checkExpect(this.recipe2.blue, 0.5 / 16.275) &&
+        t.checkExpect(this.recipe2.black, 0.775 / 16.275) &&
+        t.checkExpect(this.recipe3.red, 5.0 / 16.8) &&
+        t.checkExpect(this.recipe3.yellow, 10.0 / 16.8) &&
+        t.checkExpect(this.recipe3.blue, 1.0 / 16.8) &&
+        t.checkExpect(this.recipe3.black, 0.8 / 16.8);
+  }
+
+  // Test the 2-color (mixing) constructor
+  boolean testMixingConstructor(Tester t) {
+    return t.checkExpect(this.recipe6.red, 7.5 / 24.0) &&
+        t.checkExpect(this.recipe6.yellow, 15.0 / 24.0) &&
+        t.checkExpect(this.recipe6.blue, 0.75 / 24.0) &&
+        t.checkExpect(this.recipe6.black, 0.75 / 24.0);
+  }
+
+  // Test the sameRecipe(DyeRecipe)
+  boolean testSameRecipeObjectSame(Tester t) {
+    double total = 4.0 + 8.0 + 0.4 + 0.5;
+    return t.checkExpect(this.recipe4.sameRecipe(this.recipe4), true)
+        && t.checkExpect(this.recipe4.sameRecipe(this.recipe5), false)
+        && t.checkExpect(this.recipe4.sameRecipe(0.5, 0.3, 0.1, 0.1), false)
+        && t.checkExpect(this.recipe4.sameRecipe((4.0 / total) + 0.0005, 8.0 / total, 0.4 / total, 0.5 / total), true);
+  }
+
 }
