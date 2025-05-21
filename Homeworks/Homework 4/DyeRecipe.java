@@ -247,3 +247,45 @@ class DyeRecipeTest {
         && t.checkExpect(this.utils.normalizeBlack(2.0, 2.0, 2.0, 0.6), Math.min(0.3, 0.05 * 3.0));
   }
 }
+
+interface IShape {
+  boolean sameShape(IShape that);
+
+  boolean sameCircle(Circle that);
+
+  boolean sameRect(Rect that);
+}
+
+class Circle implements IShape {
+  int x, y, radius;
+
+  public boolean sameShape(IShape that) {
+    return that.sameCircle(this); // Dispatch to the other instance
+  }
+
+  public boolean sameCircle(Circle that) {
+    return this.x == that.x && this.y == that.y && this.radius == that.radius;
+  }
+
+  public boolean sameRect(Rect that) {
+    return false; // Circle is never same as Rect
+  }
+}
+
+class Rect implements IShape {
+  int x, y, width, height;
+
+  public boolean sameShape(IShape that) {
+    return that.sameRect(this); // Pass control to that object
+  }
+
+  public boolean sameCircle(Circle that) {
+    return false; // Rect is never same as Circle
+  }
+
+  public boolean sameRect(Rect that) {
+    return this.x == that.x && this.y == that.y &&
+        this.width == that.width && this.height == that.height;
+  }
+} // Usage: shape1.sameShape(shape2) // No instanceof needed
+
