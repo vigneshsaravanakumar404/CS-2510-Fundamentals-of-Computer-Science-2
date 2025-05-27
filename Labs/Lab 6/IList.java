@@ -142,7 +142,7 @@ class ExamplesLists {
             .fold((s, count) -> count + 1, 0), 0);
   }
 
-  boolean testcreateThreeLetterAbbreviations(Tester t) {
+  boolean testCreateThreeLetterAbbreviations(Tester t) {
     return t.checkExpect(this.december.map(s -> s.substring(0, 3).toUpperCase()),
         new ConsList<String>("DEC",
             new ConsList<String>("NOV",
