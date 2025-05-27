@@ -8,19 +8,39 @@ import java.util.Random;
 
 // represents world constants for the game
 interface IWorldConstants {
-  int WORLD_WIDTH = 1200, WORLD_HEIGHT = 800, SPEED_BOOST_SIZE = 25, LARGE_FISH_SIZE = 110;
-  int SF_COUNT = 25, MF_COUNT = 10, LF_COUNT = 4, BOOST_COUNT = 3;
-  double BASE_MASS = 10.0, MASS_PER_VALUE = 2.0, SPEED_BOOST_DURATION = 300.0;
-  double DRAG_COEFFICIENT = 0.95, TARGET_THRESHOLD = 10.0, TICK_RATE = 1.0 / 144;
+  int WORLD_WIDTH = 1200;
+  int WORLD_HEIGHT = 800;
+  int SPEED_BOOST_SIZE = 25;
+  int LARGE_FISH_SIZE = 110;
+
+  int SF_COUNT = 25;
+  int MF_COUNT = 10;
+  int LF_COUNT = 4;
+  int BOOST_COUNT = 3;
+
+  double BASE_MASS = 10.0;
+  double MASS_PER_VALUE = 2.0;
+  double SPEED_BOOST_DURATION = 300.0;
+
+  double DRAG_COEFFICIENT = 0.95;
+  double TARGET_THRESHOLD = 10.0;
+  double TICK_RATE = 1.0 / 144;
+
   Random R = new Random(123);
-  String f1 = "f1.png", f2 = "f2.png", f3 = "f3.png", f4 = "f4.png";
-  WorldImage F1 = new FromFileImage(f1), F2 = new FromFileImage(f2);
-  WorldImage F3 = new FromFileImage(f3), F4 = new FromFileImage(f4);
+  String f1 = "src/f1.png";
+  String f2 = "src/f2.png";
+  String f3 = "src/f3.png";
+  String f4 = "src/f4.png";
+  WorldImage F1 = new FromFileImage(f1);
+  WorldImage F2 = new FromFileImage(f2);
+  WorldImage F3 = new FromFileImage(f3);
+  WorldImage F4 = new FromFileImage(f4);
 }
 
 // represents a vector in 2D space
 class Vector<T> {
-  T x, y;
+  T x;
+  T y;
 
   Vector(T x, T y) {
     this.x = x;
@@ -128,8 +148,9 @@ class ConsListFish implements IListFish {
   // returns the result of a collision
   public CollisionResult checkCollisions(PlayerFish player, int smallEaten, int mediumEaten,
       boolean playerEaten) {
-    if (playerEaten)
+    if (playerEaten) {
       return new CollisionResult(player, this, smallEaten, mediumEaten, true);
+    }
 
     if (this.first.collidesWith(player)) {
       if (this.first.canBeEatenBy(player)) {
@@ -307,25 +328,27 @@ abstract class Fish implements IFish {
   // Rest of the methods remain the same...
   // wraps the x coordinate around the world boundaries
   int wrapX(int x) {
-    if (x < -size) {
-      return WORLD_WIDTH + size;
+    if (x < -this.size) {
+      return WORLD_WIDTH + this.size;
     }
-    if (x > WORLD_WIDTH + size) {
-      return -size;
+    if (x > WORLD_WIDTH + this.size) {
+      return -this.size;
     }
     return x;
   } // Tested
 
   // returns the current position of the fish clamped to the world
   int clampY(int y) {
-    return Math.max(size / 2, Math.min(WORLD_HEIGHT - size / 2, y));
+    return Math.max(this.size / 2, Math.min(WORLD_HEIGHT - this.size / 2, y));
   } // Tested
 }
 
 // represents a fish that moves in the background
 class BackgroundFish extends Fish {
   Vector<Integer> target;
-  double speed, actualX, actualY;
+  double speed;
+  double actualX;
+  double actualY;
 
   // constructor for the background fish
   BackgroundFish(int x, int y, int size, String imagePath, double speed) {
@@ -349,25 +372,26 @@ class BackgroundFish extends Fish {
   // moves the background fish towards its target and returns a new fish instance
   public BackgroundFish move() {
     Vector<Integer> currentTarget;
-    if (Math.hypot(target.x - actualX, target.y - actualY) < TARGET_THRESHOLD) {
+    if (Math.hypot(this.target.x - this.actualX, this.target.y - this.actualY) < TARGET_THRESHOLD) {
       currentTarget = new Vector<>(R.nextInt(WORLD_WIDTH), R.nextInt(WORLD_HEIGHT));
     } else {
-      currentTarget = target;
+      currentTarget = this.target;
     }
 
-    double angle = Math.atan2(currentTarget.y - actualY, currentTarget.x - actualX);
-    double newActualX = actualX + speed * Math.cos(angle);
-    double newActualY = actualY + speed * Math.sin(angle);
+    double angle = Math.atan2(currentTarget.y - this.actualY, currentTarget.x - this.actualX);
+    double newActualX = this.actualX + this.speed * Math.cos(angle);
+    double newActualY = this.actualY + this.speed * Math.sin(angle);
 
-    if (newActualX < -size)
-      newActualX = WORLD_WIDTH + size;
-    else if (newActualX > WORLD_WIDTH + size)
-      newActualX = -size;
+    if (newActualX < -this.size) {
+      newActualX = WORLD_WIDTH + this.size;
+    } else if (newActualX > WORLD_WIDTH + this.size) {
+      newActualX = -this.size;
+    }
 
-    newActualY = Math.max(size / 2, Math.min(WORLD_HEIGHT - size / 2, newActualY));
+    newActualY = Math.max(this.size / 2, Math.min(WORLD_HEIGHT - this.size / 2, newActualY));
 
-    return new BackgroundFish(newActualX, newActualY, size, imagePath, speed, currentTarget,
-        Math.cos(angle) > 0);
+    return new BackgroundFish(newActualX, newActualY, this.size, this.imagePath, this.speed,
+        currentTarget, Math.cos(angle) > 0);
   }
 
   // returns the number of background fish
@@ -378,7 +402,11 @@ class BackgroundFish extends Fish {
 
 // represents a fish that moves in a wave pattern
 abstract class WaveFish extends Fish {
-  double baseSpeed, waveAmplitude, waveFrequency, time, periodOffset;
+  double baseSpeed;
+  double waveAmplitude;
+  double waveFrequency;
+  double time;
+  double periodOffset;
   int baseY;
 
   // constructor for the wave fish
@@ -423,12 +451,12 @@ class MediumFish extends WaveFish {
 
   // moves the fish and returns its pos
   public MediumFish move() {
-    int newX = wrapX(position.x + velocity.x.intValue());
+    int newX = wrapX(this.position.x + this.velocity.x.intValue());
     double newTime = time + 0.12;
-    int newY = clampY(
-        baseY + (int) (waveAmplitude * Math.sin(newTime * waveFrequency + periodOffset)));
-    return new MediumFish(newX, newY, size, imagePath, baseSpeed, direction, waveAmplitude,
-        waveFrequency, newTime, baseY, periodOffset);
+    int newY = clampY(baseY
+        + (int) (this.waveAmplitude * Math.sin(newTime * this.waveFrequency + this.periodOffset)));
+    return new MediumFish(newX, newY, this.size, this.imagePath, this.baseSpeed, this.direction,
+        this.waveAmplitude, this.waveFrequency, newTime, this.baseY, this.periodOffset);
   }
 
   // returns the number of medium fish
@@ -454,12 +482,12 @@ class LargeFish extends WaveFish {
 
   // moves the fish and returns its position
   public LargeFish move() {
-    int newX = wrapX(position.x + velocity.x.intValue());
+    int newX = wrapX(this.position.x + this.velocity.x.intValue());
     double newTime = time + 0.12;
-    int newY = clampY(
-        baseY + (int) (waveAmplitude * Math.sin(newTime * waveFrequency + periodOffset)));
-    return new LargeFish(newX, newY, size, imagePath, baseSpeed, direction, waveAmplitude,
-        waveFrequency, newTime, baseY, periodOffset);
+    int newY = clampY(this.baseY
+        + (int) (this.waveAmplitude * Math.sin(newTime * this.waveFrequency + this.periodOffset)));
+    return new LargeFish(newX, newY, this.size, this.imagePath, this.baseSpeed, this.direction,
+        this.waveAmplitude, this.waveFrequency, newTime, this.baseY, this.periodOffset);
   }
 
   // returns the number of large fish here
@@ -470,9 +498,15 @@ class LargeFish extends WaveFish {
 
 // represents a player fish that can be controlled by the user
 class PlayerFish extends Fish {
-  double movementForce, mass, actualX, actualY;
-  boolean upPressed, downPressed, leftPressed, rightPressed;
-  double MAX_SPEED = 8.0;
+  double movementForce;
+  double mass;
+  double actualX;
+  double actualY;
+  boolean upPressed;
+  boolean downPressed;
+  boolean leftPressed;
+  boolean rightPressed;
+  double maxSpeed = 8.0;
 
   // constructor for the player fish
   PlayerFish(int x, int y, int size, double movementForce, double mass, String imagePath) {
@@ -500,10 +534,10 @@ class PlayerFish extends Fish {
 
   // updates the key pressed state and returns a new player fish instance
   public PlayerFish setKeyPressed(String key, boolean pressed) {
-    boolean newUpPressed = upPressed;
-    boolean newDownPressed = downPressed;
-    boolean newLeftPressed = leftPressed;
-    boolean newRightPressed = rightPressed;
+    boolean newUpPressed = this.upPressed;
+    boolean newDownPressed = this.downPressed;
+    boolean newLeftPressed = this.leftPressed;
+    boolean newRightPressed = this.rightPressed;
 
     if (key.equals("up")) {
       newUpPressed = pressed;
@@ -515,8 +549,9 @@ class PlayerFish extends Fish {
       newRightPressed = pressed;
     }
 
-    return new PlayerFish(actualX, actualY, size, movementForce, mass, imagePath, velocity.x,
-        velocity.y, direction, newUpPressed, newDownPressed, newLeftPressed, newRightPressed);
+    return new PlayerFish(this.actualX, this.actualY, this.size, this.movementForce, this.mass,
+        this.imagePath, this.velocity.x, this.velocity.y, this.direction, newUpPressed,
+        newDownPressed, newLeftPressed, newRightPressed);
   }
 
   // moves the player fish without speed boost
@@ -526,57 +561,62 @@ class PlayerFish extends Fish {
 
   // moves the player fish with a speed boost multiplier
   public PlayerFish moveWithBoost(double speedMultiplier) {
-    double leftForce = 0, rightForce = 0, upForce = 0, downForce = 0;
-    if (leftPressed) {
+    double leftForce = 0;
+    double rightForce = 0;
+    double upForce = 0;
+    double downForce = 0;
+    if (this.leftPressed) {
       leftForce = -1;
     }
-    if (rightPressed) {
+    if (this.rightPressed) {
       rightForce = 1;
     }
-    if (upPressed) {
+    if (this.upPressed) {
       upForce = -1;
     }
-    if (downPressed) {
+    if (this.downPressed) {
       downForce = 1;
     }
 
-    double forceX = (leftForce + rightForce) * movementForce * speedMultiplier;
-    double forceY = (upForce + downForce) * movementForce * speedMultiplier;
+    double forceX = (leftForce + rightForce) * this.movementForce * speedMultiplier;
+    double forceY = (upForce + downForce) * this.movementForce * speedMultiplier;
 
-    double newVx = (velocity.x + forceX / mass * 3) * DRAG_COEFFICIENT;
-    double newVy = (velocity.y + forceY / mass * 3) * DRAG_COEFFICIENT;
+    double newVx = (this.velocity.x + forceX / this.mass * 3) * DRAG_COEFFICIENT;
+    double newVy = (this.velocity.y + forceY / this.mass * 3) * DRAG_COEFFICIENT;
 
     double speed = Math.hypot(newVx, newVy);
-    double maxSpeed = MAX_SPEED * speedMultiplier;
+    double maxSpeed = this.maxSpeed * speedMultiplier;
     if (speed > maxSpeed) {
       newVx = (newVx / speed) * maxSpeed;
       newVy = (newVy / speed) * maxSpeed;
     }
 
-    double newActualX = actualX + newVx;
-    double newActualY = clampY((int) (actualY + newVy));
+    double newActualX = this.actualX + newVx;
+    double newActualY = clampY((int) (this.actualY + newVy));
 
-    if (newActualX < -size) {
-      newActualX = WORLD_WIDTH + size;
-    } else if (newActualX > WORLD_WIDTH + size) {
-      newActualX = -size;
+    if (newActualX < -this.size) {
+      newActualX = WORLD_WIDTH + this.size;
+    } else if (newActualX > WORLD_WIDTH + this.size) {
+      newActualX = -this.size;
     }
 
     boolean newDirection;
     if (Math.abs(newVx) > 0.1) {
       newDirection = newVx > 0;
     } else {
-      newDirection = direction;
+      newDirection = this.direction;
     }
 
-    return new PlayerFish(newActualX, newActualY, size, movementForce, mass, imagePath, newVx,
-        newVy, newDirection, upPressed, downPressed, leftPressed, rightPressed);
+    return new PlayerFish(newActualX, newActualY, this.size, this.movementForce, this.mass,
+        this.imagePath, newVx, newVy, newDirection, this.upPressed, this.downPressed,
+        this.leftPressed, this.rightPressed);
   }
 
   // updates the player fish size and mass and returns a new instance
   public PlayerFish updateSizeAndMass(int newSize, double newMass) {
-    return new PlayerFish(actualX, actualY, newSize, movementForce, newMass, imagePath, velocity.x,
-        velocity.y, direction, upPressed, downPressed, leftPressed, rightPressed);
+    return new PlayerFish(this.actualX, this.actualY, newSize, this.movementForce, newMass,
+        this.imagePath, this.velocity.x, this.velocity.y, this.direction, this.upPressed,
+        this.downPressed, this.leftPressed, this.rightPressed);
   }
 }
 
@@ -585,15 +625,23 @@ class FeedingFrenzy extends World implements IWorldConstants {
   PlayerFish player;
   IListFish allFish;
   IListBoost allBoosts;
-  int score, lives, RESPAWN_DELAY = 120, BOOST_RESPAWN_DELAY = 180;
-  int smallFishEaten, mediumFishEaten, mediumRespawnTimer, largeRespawnTimer, boostRespawnTimer;
-  double totalFishValue, speedBoostTimer;
-  boolean gameWon, gameLost;
+  int score;
+  int lives;
+  int boostDelay = 120;
+  int boostRespawnDelay = 180;
+  int smallFishEaten;
+  int mediumFishEaten;
+  int mediumRespawnTimer;
+  int largeRespawnTimer;
+  int boostRespawnTimer;
+  double totalFishValue;
+  double speedBoostTimer;
+  boolean gameWon;
+  boolean gameLost;
 
   // creates a new game with default starting values
   FeedingFrenzy() {
-    this.player = new PlayerFish(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 50, 5.0, BASE_MASS,
-        f1);
+    this.player = new PlayerFish(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 50, 5.0, BASE_MASS, f1);
     this.allFish = createLF(0, LF_COUNT,
         createMF(0, MF_COUNT, createSF(0, SF_COUNT, new MtListFish())));
     this.allBoosts = createBoostsHelper(0, BOOST_COUNT, new MtListBoost());
@@ -656,8 +704,8 @@ class FeedingFrenzy extends World implements IWorldConstants {
     if (current >= total) {
       return acc;
     }
-    MediumFish medium = new MediumFish(R.nextInt(WORLD_WIDTH), R.nextInt(WORLD_HEIGHT), 70,
-        f2, 3.0 + R.nextDouble(), R.nextBoolean());
+    MediumFish medium = new MediumFish(R.nextInt(WORLD_WIDTH), R.nextInt(WORLD_HEIGHT), 70, f2,
+        3.0 + R.nextDouble(), R.nextBoolean());
     return createMF(current + 1, total, new ConsListFish(medium, acc));
   } // tested
 
@@ -789,8 +837,7 @@ class FeedingFrenzy extends World implements IWorldConstants {
     if (result.playerEaten) {
       newLives = this.lives - 1;
       if (newLives > 0) {
-        respawnedPlayer = new PlayerFish(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 50, 5.0, BASE_MASS,
-            f1);
+        respawnedPlayer = new PlayerFish(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 50, 5.0, BASE_MASS, f1);
         newScore = Math.max(0, newScore - 50);
         respawnedTotalValue = newTotalValue * 0.5;
         respawnedSmallEaten = (int) (respawnedSmallEaten * 0.5);
@@ -838,10 +885,10 @@ class FeedingFrenzy extends World implements IWorldConstants {
         xPosition = -60;
       }
 
-      MediumFish newMedium = new MediumFish(xPosition, 50 + R.nextInt(WORLD_HEIGHT - 100), 70,
-          f2, 3.0 + R.nextDouble(), fromLeft);
+      MediumFish newMedium = new MediumFish(xPosition, 50 + R.nextInt(WORLD_HEIGHT - 100), 70, f2,
+          3.0 + R.nextDouble(), fromLeft);
       updatedFishList = new ConsListFish(newMedium, updatedFishList);
-      newMediumTimer = RESPAWN_DELAY;
+      newMediumTimer = this.boostDelay;
     }
 
     if (counts.largeCount < LF_COUNT && newLargeTimer == 0) {
@@ -857,7 +904,7 @@ class FeedingFrenzy extends World implements IWorldConstants {
       LargeFish newLarge = new LargeFish(xPosition, yPosition, LARGE_FISH_SIZE, f3,
           1.5 + R.nextDouble() * 0.5, fromLeft);
       updatedFishList = new ConsListFish(newLarge, updatedFishList);
-      newLargeTimer = RESPAWN_DELAY;
+      newLargeTimer = this.boostDelay;
     }
 
     IListBoost updatedBoostList = boostResult.boostList;
@@ -866,7 +913,7 @@ class FeedingFrenzy extends World implements IWorldConstants {
       SpeedBoost newBoost = new SpeedBoost(100 + R.nextInt(WORLD_WIDTH - 200),
           100 + R.nextInt(WORLD_HEIGHT - 200));
       updatedBoostList = new ConsListBoost(newBoost, updatedBoostList);
-      newBoostTimer = BOOST_RESPAWN_DELAY;
+      newBoostTimer = this.boostRespawnDelay;
     }
 
     return new FeedingFrenzy(respawnedPlayer, updatedFishList, updatedBoostList, newScore, newLives,
@@ -920,7 +967,8 @@ class FeedingFrenzy extends World implements IWorldConstants {
 class CollisionResult {
   PlayerFish player;
   IListFish fishList;
-  int smallEaten, mediumEaten;
+  int smallEaten;
+  int mediumEaten;
   boolean playerEaten;
 
   // Constructor for CollisionResult
@@ -950,7 +998,9 @@ class BoostCollisionResult {
 
 // represents the count of different fish types
 class FishCount {
-  int smallCount, mediumCount, largeCount;
+  int smallCount;
+  int mediumCount;
+  int largeCount;
 
   // Constructor for FishCount
   FishCount(int smallCount, int mediumCount, int largeCount) {
@@ -1135,10 +1185,10 @@ class Main implements IWorldConstants {
 
   boolean testPlayerFishMove(Tester t) {
     PlayerFish player1 = new PlayerFish(100, 100, 50, 5.0, 10.0, f1);
-    PlayerFish player2 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 2.0, 0.0,
-        true, false, false, false, false);
-    PlayerFish player3 = new PlayerFish(WORLD_WIDTH + 60, 100.0, 50, 5.0, 10.0, f1,
-        0.0, 0.0, true, false, false, false, false);
+    PlayerFish player2 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 2.0, 0.0, true, false,
+        false, false, false);
+    PlayerFish player3 = new PlayerFish(WORLD_WIDTH + 60, 100.0, 50, 5.0, 10.0, f1, 0.0, 0.0, true,
+        false, false, false, false);
     return t.checkExpect(player1.move().position.x, 100)
         && t.checkExpect(player1.move().position.y, 100)
         && t.checkExpect(player2.move().actualX > 100.0, true)
@@ -1147,10 +1197,10 @@ class Main implements IWorldConstants {
 
   boolean testPlayerFishMoveWithBoost(Tester t) {
     PlayerFish player1 = new PlayerFish(100, 100, 50, 5.0, 10.0, f1);
-    PlayerFish player2 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 0.0, 0.0,
-        true, false, false, false, true);
-    PlayerFish player3 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 0.0, 0.0,
-        true, true, false, false, false);
+    PlayerFish player2 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 0.0, 0.0, true, false,
+        false, false, true);
+    PlayerFish player3 = new PlayerFish(100.0, 100.0, 50, 5.0, 10.0, f1, 0.0, 0.0, true, true,
+        false, false, false);
     return t.checkExpect(player1.moveWithBoost(2.0).position.x, 100)
         && t.checkExpect(player1.moveWithBoost(2.0).position.y, 100)
         && t.checkExpect(player2.moveWithBoost(2.0).velocity.x > 0, true)
