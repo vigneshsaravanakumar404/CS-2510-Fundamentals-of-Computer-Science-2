@@ -7,7 +7,7 @@
       "command": "cmd.exe",
       "args": [
         "/c",
-        "cls && cd \"C:\\Users\\Vigne\\OneDrive - Northeastern University\\Documents\\Programing Master\\Computer Science Classes\\CS 2510\\Labs\\Lab 6\" && javac -cp .;tester.jar IList.java && java -cp .;tester.jar tester.Main ExamplesLists"
+        "cls && cd \"C:\\Users\\Vigne\\OneDrive - Northeastern University\\Documents\\Programing Master\\Computer Science Classes\\CS 2510\\Labs\\Lab 8\" && javac -cp .;tester.jar ExamplesRegistrar.java && java -cp .;tester.jar tester.Main ExamplesRegistrar"
       ],
       "group": {
         "kind": "build",
