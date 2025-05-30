@@ -2,5 +2,3 @@
   - Delete unused methods
   - Add tests
   - Implement Visitor pattern
-- EC:
-- Check (sin(x) + 1)^2 example

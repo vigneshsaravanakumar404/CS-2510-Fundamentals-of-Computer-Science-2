@@ -139,30 +139,30 @@ class ExamplesFunctionObjects {
 
   // Test the function f(x) = (sin(x) + 1)²
   IFunc<Double, Double> sinPlus1 = new FunctionComposition<Double, Double, Double>(
-      sine, plus1);
+      this.sine, this.plus1);
   IFunc<Double, Double> fComposed = new FunctionComposition<Double, Double, Double>(
-      sinPlus1, square);
+      this.sinPlus1, this.square);
 
   // list of functions represening f(x) = (sin(x) + 1)^2
-  IList<IFunc<Double, Double>> functionList = new ConsList<IFunc<Double, Double>>(sine,
-      new ConsList<IFunc<Double, Double>>(plus1,
-          new ConsList<IFunc<Double, Double>>(square,
+  IList<IFunc<Double, Double>> functionList = new ConsList<IFunc<Double, Double>>(this.sine,
+      new ConsList<IFunc<Double, Double>>(this.plus1,
+          new ConsList<IFunc<Double, Double>>(this.square,
               new MtList<IFunc<Double, Double>>())));
-  IFunc<Double, Double> fFromList = functionList.foldl(
+  IFunc<Double, Double> fFromList = this.functionList.foldl(
       new ComposeFunctions<Double, Double, Double>(), new Identity<Double>());
 
   // tests for square num function
   boolean testSquareNum(Tester t) {
-    return t.checkInexact(square.apply(3.0), 9.0, 0.001)
-        && t.checkInexact(square.apply(-2.0), 4.0, 0.001)
-        && t.checkInexact(square.apply(0.0), 0.0, 0.001);
+    return t.checkInexact(this.square.apply(3.0), 9.0, 0.001)
+        && t.checkInexact(this.square.apply(-2.0), 4.0, 0.001)
+        && t.checkInexact(this.square.apply(0.0), 0.0, 0.001);
   }
 
   // tests for sine num function
   boolean testSineNum(Tester t) {
-    return t.checkInexact(sine.apply(0.0), 0.0, 0.001)
-        && t.checkInexact(sine.apply(Math.PI / 2), 1.0, 0.001)
-        && t.checkInexact(sine.apply(Math.PI), 0.0, 0.001);
+    return t.checkInexact(this.sine.apply(0.0), 0.0, 0.001)
+        && t.checkInexact(this.sine.apply(Math.PI / 2), 1.0, 0.001)
+        && t.checkInexact(this.sine.apply(Math.PI), 0.0, 0.001);
   }
 
   // tests for identity function
@@ -187,22 +187,22 @@ class ExamplesFunctionObjects {
 
   // REQUIRED TEST FROM THE ASSIGNMENT
   boolean testComposition(Tester t) {
-    return t.checkInexact(fComposed.apply(0.0), 1.0, 0.001)
-        && t.checkInexact(fComposed.apply(Math.PI / 2), 4.0, 0.001)
-        && t.checkInexact(fComposed.apply(Math.PI), 1.0, 0.001);
+    return t.checkInexact(this.fComposed.apply(0.0), 1.0, 0.001)
+        && t.checkInexact(this.fComposed.apply(Math.PI / 2), 4.0, 0.001)
+        && t.checkInexact(this.fComposed.apply(Math.PI), 1.0, 0.001);
   }
 
   // tests for function composition using foldl
   boolean testFoldlComposition(Tester t) {
-    return t.checkInexact(fFromList.apply(0.0), 1.0, 0.001)
-        && t.checkInexact(fFromList.apply(Math.PI / 2), 4.0, 0.001)
-        && t.checkInexact(fFromList.apply(Math.PI), 1.0, 0.001);
+    return t.checkInexact(this.fFromList.apply(0.0), 1.0, 0.001)
+        && t.checkInexact(this.fFromList.apply(Math.PI / 2), 4.0, 0.001)
+        && t.checkInexact(this.fFromList.apply(Math.PI), 1.0, 0.001);
   }
 
   // REQUIRED TEST FROM THE ASSIGNMENT
   boolean testFunctionEquality(Tester t) {
-    boolean sameObject = fComposed.equals(fFromList);
-    boolean sameResults = Math.abs(fComposed.apply(1.0) - fFromList.apply(1.0)) == 0;
+    boolean sameObject = this.fComposed.equals(fFromList);
+    boolean sameResults = Math.abs(this.fComposed.apply(1.0) - this.fFromList.apply(1.0)) == 0;
 
     return t.checkExpect(sameObject, false) &&
         t.checkExpect(sameResults, true);
