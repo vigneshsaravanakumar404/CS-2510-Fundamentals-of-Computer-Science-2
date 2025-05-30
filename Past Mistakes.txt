@@ -1,2 +1,3 @@
 - not using this. even when you don't need to
-- Utilize alread created functions to do later problems
+- Missing tests
+- Missing template
