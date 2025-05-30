@@ -1,3 +1,6 @@
-- Delete unused methods
-- Add examples
-- Add tests
+- ABST:
+  - Delete unused methods
+  - Add tests
+  - Implement Visitor pattern
+- EC:
+- Check (sin(x) + 1)^2 example

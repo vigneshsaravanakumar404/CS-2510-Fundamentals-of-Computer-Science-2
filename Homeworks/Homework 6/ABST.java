@@ -246,7 +246,6 @@ interface IList<T> {
 
   // Helper methods for checking equality with non-empty lists
   boolean sameListConsHelper(ConsList<T> cons);
-
 }
 
 // represents a generic empty list
@@ -334,13 +333,129 @@ class ConsList<T> implements IList<T> {
 }
 
 class ExampleABST {
+  // Book examples
+  Book book1 = new Book("Alice in Wonderland", "Lewis Carroll", 15);
+  Book book2 = new Book("The Great Gatsby", "F Scott Fitzgerald", 12);
+  Book book3 = new Book("1984", "George Orwell", 14);
+  Book book4 = new Book("Pride and Prejudice", "Jane Austen", 10);
+  Book book5 = new Book("To Kill a Mockingbird", "Harper Lee", 13);
+  Book book6 = new Book("The Catcher in the Rye", "J.D. Salinger", 11);
+  Book book7 = new Book("Brave New World", "Aldous Huxley", 16);
+  Book book8 = new Book("Animal Farm", "George Orwell", 9);
 
-  ABST<Book> b1 = new Leaf<Book>(new BooksByTitle());
-  ABST<Book> b2 = new Leaf<Book>(new BooksByTitle());
-  IList<Book> lb1 = b1.buildList();
-  IList<Book> lb2 = b2.buildList();
+  // Binary Search Trees sorted by Title
+  // Empty tree sorted by title
+  ABST<Book> emptyByTitle = new Leaf<Book>(new BooksByTitle());
 
-  boolean testSameTree(Tester t) {
-    return t.checkExpect(b1.sameData(b2), true);
-  }
+  // Single node tree sorted by title
+  ABST<Book> singleByTitle = new Node<Book>(new BooksByTitle(), book1,
+      new Leaf<Book>(new BooksByTitle()), new Leaf<Book>(new BooksByTitle()));
+
+  // Balanced tree sorted by title (following the pattern from assignment)
+  ABST<Book> balancedByTitle = new Node<Book>(new BooksByTitle(), book2,
+      new Node<Book>(new BooksByTitle(), book1,
+          new Leaf<Book>(new BooksByTitle()),
+          new Leaf<Book>(new BooksByTitle())),
+      new Node<Book>(new BooksByTitle(), book4,
+          new Leaf<Book>(new BooksByTitle()),
+          new Leaf<Book>(new BooksByTitle())));
+
+  // Left-heavy tree sorted by title
+  ABST<Book> leftHeavyByTitle = new Node<Book>(new BooksByTitle(), book2,
+      new Node<Book>(new BooksByTitle(), book3,
+          new Node<Book>(new BooksByTitle(), book1,
+              new Leaf<Book>(new BooksByTitle()),
+              new Leaf<Book>(new BooksByTitle())),
+          new Leaf<Book>(new BooksByTitle())),
+      new Leaf<Book>(new BooksByTitle()));
+
+  // Binary Search Trees sorted by Author
+  // Empty tree sorted by author
+  ABST<Book> emptyByAuthor = new Leaf<Book>(new BooksByAuthor());
+
+  // Single node tree sorted by author
+  ABST<Book> singleByAuthor = new Node<Book>(new BooksByAuthor(), book5,
+      new Leaf<Book>(new BooksByAuthor()), new Leaf<Book>(new BooksByAuthor()));
+
+  // Tree with multiple books by same author
+  ABST<Book> multiAuthorTree = new Node<Book>(new BooksByAuthor(), book3, 
+      new Node<Book>(new BooksByAuthor(), book2, 
+          new Leaf<Book>(new BooksByAuthor()),
+          new Leaf<Book>(new BooksByAuthor())),
+      new Node<Book>(new BooksByAuthor(), book8, 
+          new Node<Book>(new BooksByAuthor(), book5, 
+              new Leaf<Book>(new BooksByAuthor()),
+              new Leaf<Book>(new BooksByAuthor())),
+          new Leaf<Book>(new BooksByAuthor())));
+
+  // Right-heavy tree sorted by author
+  ABST<Book> rightHeavyByAuthor = new Node<Book>(new BooksByAuthor(), book7, 
+      new Leaf<Book>(new BooksByAuthor()),
+      new Node<Book>(new BooksByAuthor(), book6, 
+          new Leaf<Book>(new BooksByAuthor()),
+          new Node<Book>(new BooksByAuthor(), book4, 
+              new Leaf<Book>(new BooksByAuthor()),
+              new Node<Book>(new BooksByAuthor(), book1, 
+                  new Leaf<Book>(new BooksByAuthor()),
+                  new Leaf<Book>(new BooksByAuthor())))));
+
+  // Binary Search Trees sorted by Price
+  // Empty tree sorted by price
+  ABST<Book> emptyByPrice = new Leaf<Book>(new BooksByPrice());
+
+  // Single node tree sorted by price
+  ABST<Book> singleByPrice = new Node<Book>(new BooksByPrice(), book3, 
+      new Leaf<Book>(new BooksByPrice()), new Leaf<Book>(new BooksByPrice()));
+
+  // Balanced tree sorted by price
+  ABST<Book> balancedByPrice = new Node<Book>(new BooksByPrice(), book2, 
+      new Node<Book>(new BooksByPrice(), book4,
+          new Node<Book>(new BooksByPrice(), book8,
+              new Leaf<Book>(new BooksByPrice()),
+              new Leaf<Book>(new BooksByPrice())),
+          new Node<Book>(new BooksByPrice(), book6,
+              new Leaf<Book>(new BooksByPrice()),
+              new Leaf<Book>(new BooksByPrice()))),
+      new Node<Book>(new BooksByPrice(), book3,
+          new Node<Book>(new BooksByPrice(), book5, 
+              new Leaf<Book>(new BooksByPrice()),
+              new Leaf<Book>(new BooksByPrice())),
+          new Node<Book>(new BooksByPrice(), book1, 
+              new Leaf<Book>(new BooksByPrice()),
+              new Node<Book>(new BooksByPrice(), book7, 
+                  new Leaf<Book>(new BooksByPrice()),
+                  new Leaf<Book>(new BooksByPrice())))));
+
+  // Tree with duplicate prices (using right subtree for duplicates)
+  ABST<Book> duplicatePriceTree = new Node<Book>(new BooksByPrice(), book3, 
+      new Node<Book>(new BooksByPrice(), book5, 
+          new Leaf<Book>(new BooksByPrice()),
+          new Leaf<Book>(new BooksByPrice())),
+      new Node<Book>(new BooksByPrice(),
+          new Book("Another 14 Dollar Book", "Some Author", 14),
+          new Leaf<Book>(new BooksByPrice()),
+          new Leaf<Book>(new BooksByPrice())));
+
+  // IList<Book> examples matching the BSTs
+  // Empty list matching empty tree
+  IList<Book> emptyBookList = new MtList<Book>();
+
+  // List with single book matching singleByTitle tree
+  IList<Book> singleBookList = new ConsList<Book>(book1, new MtList<Book>());
+
+  // List matching balancedByTitle tree (in-order traversal: book1, book2, book4)
+  IList<Book> balancedTitleList = new ConsList<Book>(book1,
+      new ConsList<Book>(book2,
+          new ConsList<Book>(book4, new MtList<Book>())));
+
+  // List matching balancedByPrice tree (in-order traversal by price)
+  IList<Book> balancedPriceList = new ConsList<Book>(book8,
+      new ConsList<Book>(book4,
+          new ConsList<Book>(book6,
+              new ConsList<Book>(book2,
+                  new ConsList<Book>(book5,
+                      new ConsList<Book>(book3,
+                          new ConsList<Book>(book1,
+                              new ConsList<Book>(book7,
+                                  new MtList<Book>()))))))));
 }
