@@ -378,24 +378,24 @@ class ExampleABST {
       new Leaf<Book>(new BooksByAuthor()), new Leaf<Book>(new BooksByAuthor()));
 
   // Tree with multiple books by same author
-  ABST<Book> multiAuthorTree = new Node<Book>(new BooksByAuthor(), book3, 
-      new Node<Book>(new BooksByAuthor(), book2, 
+  ABST<Book> multiAuthorTree = new Node<Book>(new BooksByAuthor(), book3,
+      new Node<Book>(new BooksByAuthor(), book2,
           new Leaf<Book>(new BooksByAuthor()),
           new Leaf<Book>(new BooksByAuthor())),
-      new Node<Book>(new BooksByAuthor(), book8, 
-          new Node<Book>(new BooksByAuthor(), book5, 
+      new Node<Book>(new BooksByAuthor(), book8,
+          new Node<Book>(new BooksByAuthor(), book5,
               new Leaf<Book>(new BooksByAuthor()),
               new Leaf<Book>(new BooksByAuthor())),
           new Leaf<Book>(new BooksByAuthor())));
 
   // Right-heavy tree sorted by author
-  ABST<Book> rightHeavyByAuthor = new Node<Book>(new BooksByAuthor(), book7, 
+  ABST<Book> rightHeavyByAuthor = new Node<Book>(new BooksByAuthor(), book7,
       new Leaf<Book>(new BooksByAuthor()),
-      new Node<Book>(new BooksByAuthor(), book6, 
+      new Node<Book>(new BooksByAuthor(), book6,
           new Leaf<Book>(new BooksByAuthor()),
-          new Node<Book>(new BooksByAuthor(), book4, 
+          new Node<Book>(new BooksByAuthor(), book4,
               new Leaf<Book>(new BooksByAuthor()),
-              new Node<Book>(new BooksByAuthor(), book1, 
+              new Node<Book>(new BooksByAuthor(), book1,
                   new Leaf<Book>(new BooksByAuthor()),
                   new Leaf<Book>(new BooksByAuthor())))));
 
@@ -404,11 +404,11 @@ class ExampleABST {
   ABST<Book> emptyByPrice = new Leaf<Book>(new BooksByPrice());
 
   // Single node tree sorted by price
-  ABST<Book> singleByPrice = new Node<Book>(new BooksByPrice(), book3, 
+  ABST<Book> singleByPrice = new Node<Book>(new BooksByPrice(), book3,
       new Leaf<Book>(new BooksByPrice()), new Leaf<Book>(new BooksByPrice()));
 
   // Balanced tree sorted by price
-  ABST<Book> balancedByPrice = new Node<Book>(new BooksByPrice(), book2, 
+  ABST<Book> balancedByPrice = new Node<Book>(new BooksByPrice(), book2,
       new Node<Book>(new BooksByPrice(), book4,
           new Node<Book>(new BooksByPrice(), book8,
               new Leaf<Book>(new BooksByPrice()),
@@ -417,18 +417,18 @@ class ExampleABST {
               new Leaf<Book>(new BooksByPrice()),
               new Leaf<Book>(new BooksByPrice()))),
       new Node<Book>(new BooksByPrice(), book3,
-          new Node<Book>(new BooksByPrice(), book5, 
+          new Node<Book>(new BooksByPrice(), book5,
               new Leaf<Book>(new BooksByPrice()),
               new Leaf<Book>(new BooksByPrice())),
-          new Node<Book>(new BooksByPrice(), book1, 
+          new Node<Book>(new BooksByPrice(), book1,
               new Leaf<Book>(new BooksByPrice()),
-              new Node<Book>(new BooksByPrice(), book7, 
+              new Node<Book>(new BooksByPrice(), book7,
                   new Leaf<Book>(new BooksByPrice()),
                   new Leaf<Book>(new BooksByPrice())))));
 
   // Tree with duplicate prices (using right subtree for duplicates)
-  ABST<Book> duplicatePriceTree = new Node<Book>(new BooksByPrice(), book3, 
-      new Node<Book>(new BooksByPrice(), book5, 
+  ABST<Book> duplicatePriceTree = new Node<Book>(new BooksByPrice(), book3,
+      new Node<Book>(new BooksByPrice(), book5,
           new Leaf<Book>(new BooksByPrice()),
           new Leaf<Book>(new BooksByPrice())),
       new Node<Book>(new BooksByPrice(),
@@ -458,4 +458,128 @@ class ExampleABST {
                           new ConsList<Book>(book1,
                               new ConsList<Book>(book7,
                                   new MtList<Book>()))))))));
+
+  boolean testInsert(Tester t) {
+    return t
+        .checkExpect(this.emptyByTitle.insert(book1)
+            .sameTree(new Node<Book>(new BooksByTitle(), book1, new Leaf<Book>(new BooksByTitle()),
+                new Leaf<Book>(new BooksByTitle()))),
+            true)
+        && t.checkExpect(this.singleByTitle.insert(book2)
+            .sameTree(new Node<Book>(new BooksByTitle(), book1, new Leaf<Book>(new BooksByTitle()),
+                new Node<Book>(new BooksByTitle(), book2, new Leaf<Book>(new BooksByTitle()),
+                    new Leaf<Book>(new BooksByTitle())))),
+            true)
+        && t.checkExpect(
+            this.emptyByPrice.insert(book3).insert(book4)
+                .sameTree(new Node<Book>(
+                    new BooksByPrice(), book3, new Node<Book>(new BooksByPrice(), book4,
+                        new Leaf<Book>(new BooksByPrice()), new Leaf<Book>(new BooksByPrice())),
+                    new Leaf<Book>(new BooksByPrice()))),
+            true);
+  }
+
+  boolean testPresent(Tester t) {
+    return t.checkExpect(this.emptyByTitle.present(book1), false)
+        && t.checkExpect(this.singleByTitle.present(book1), true)
+        && t.checkExpect(this.balancedByPrice.present(book3), true);
+  }
+
+  boolean testGetLeftmost(Tester t) {
+    return t.checkException(new RuntimeException(
+        "No leftmost item of an empty tree"), this.emptyByTitle, "getLeftmost")
+        && t.checkExpect(this.singleByTitle.getLeftmost(), book1)
+        && t.checkExpect(this.balancedByPrice.getLeftmost(), book8);
+  }
+
+  boolean testGetLeftMostHelper(Tester t) {
+    return t.checkExpect(this.emptyByTitle.getLeftMostHelper(book1), book1)
+        && t.checkExpect(this.singleByTitle.getLeftMostHelper(book2), book1)
+        && t.checkExpect(this.balancedByPrice.getLeftMostHelper(book5), book8);
+  }
+
+  boolean testGetRight(Tester t) {
+    return t.checkException(new RuntimeException(
+        "No right of an empty tree"), this.emptyByTitle, "getRight")
+        && t.checkExpect(this.singleByTitle.getRight().sameTree(
+            new Leaf<Book>(new BooksByTitle())), true)
+        && t.checkExpect(
+            this.leftHeavyByTitle.getRight()
+                .sameTree(new Node<Book>(
+                    new BooksByTitle(), book2, new Node<Book>(new BooksByTitle(), book3,
+                        new Leaf<Book>(new BooksByTitle()), new Leaf<Book>(new BooksByTitle())),
+                    new Leaf<Book>(new BooksByTitle()))),
+            true);
+  }
+
+  boolean testGetRightHelper(Tester t) {
+    return t
+        .checkExpect(this.emptyByTitle.getRightHelper(book1, this.singleByTitle, new BooksByTitle())
+            .sameTree(this.singleByTitle), true)
+        && t.checkExpect(this.singleByTitle.getRightHelper(
+            book2, this.emptyByTitle, new BooksByTitle())
+            .sameTree(new Node<Book>(new BooksByTitle(), book2, new Leaf<Book>(new BooksByTitle()),
+                new Leaf<Book>(new BooksByTitle()))),
+            true)
+        && t.checkExpect(this.emptyByTitle.getRightHelper(
+            book3, this.emptyByTitle, new BooksByTitle())
+            .sameTree(new Leaf<Book>(new BooksByTitle())), true);
+  }
+
+  boolean testSameTree(Tester t) {
+    return t.checkExpect(this.emptyByTitle.sameTree(new Leaf<Book>(new BooksByTitle())), true)
+        && t.checkExpect(this.singleByTitle.sameTree(new Node<Book>(new BooksByTitle(), book1,
+            new Leaf<Book>(new BooksByTitle()), new Leaf<Book>(new BooksByTitle()))), true)
+        && t.checkExpect(this.balancedByTitle.sameTree(this.leftHeavyByTitle), false);
+  }
+
+  boolean testSameTreeLeafHelper(Tester t) {
+    return t.checkExpect(this.emptyByTitle.sameTreeLeafHelper(
+        new Leaf<Book>(new BooksByTitle())), true)
+        && t.checkExpect(this.singleByTitle.sameTreeLeafHelper(
+            new Leaf<Book>(new BooksByTitle())), false)
+        && t.checkExpect(this.balancedByPrice.sameTreeLeafHelper(
+            new Leaf<Book>(new BooksByPrice())), false);
+  }
+
+  boolean testSameTreeNodeHelper(Tester t) {
+    return t
+        .checkExpect(this.emptyByTitle.sameTreeNodeHelper(new Node<Book>(new BooksByTitle(), book1,
+            new Leaf<Book>(new BooksByTitle()), new Leaf<Book>(new BooksByTitle()))), false)
+        && t.checkExpect(this.singleByTitle.sameTreeNodeHelper(
+            new Node<Book>(new BooksByTitle(), book1, new Leaf<Book>(new BooksByTitle()),
+                new Leaf<Book>(new BooksByTitle()))),
+            true)
+        && t.checkExpect(this.balancedByTitle.sameTreeNodeHelper(
+            new Node<Book>(new BooksByTitle(), book2,
+                new Node<Book>(new BooksByTitle(), book1, new Leaf<Book>(new BooksByTitle()),
+                    new Leaf<Book>(new BooksByTitle())),
+                new Node<Book>(new BooksByTitle(), book4, new Leaf<Book>(new BooksByTitle()),
+                    new Leaf<Book>(new BooksByTitle())))),
+            true);
+  }
+
+  boolean testBuildList(Tester t) {
+    return t.checkExpect(this.emptyByTitle.buildList().sameList(this.emptyBookList), true)
+        && t.checkExpect(this.singleByTitle.buildList().sameList(this.singleBookList), true)
+        && t.checkExpect(this.balancedByTitle.buildList().sameList(this.balancedTitleList), true);
+  }
+
+  boolean testBuildListHelper(Tester t) {
+    return t
+        .checkExpect(this.emptyByTitle.buildListHelper(
+            new ConsList<Book>(book1, new MtList<Book>()))
+            .sameList(new ConsList<Book>(book1, new MtList<Book>())), true)
+        && t.checkExpect(this.singleByTitle.buildListHelper(
+            new MtList<Book>()).sameList(this.singleBookList), true)
+        && t.checkExpect(this.balancedByTitle.buildListHelper(
+            new MtList<Book>()).sameList(this.balancedTitleList), true);
+  }
+
+  boolean testSameData(Tester t) {
+    return t.checkExpect(this.emptyByTitle.sameData(this.emptyByAuthor), true)
+        && t.checkExpect(this.singleByTitle.sameData(new Node<Book>(new BooksByAuthor(), book1,
+            new Leaf<Book>(new BooksByAuthor()), new Leaf<Book>(new BooksByAuthor()))), true)
+        && t.checkExpect(this.balancedByTitle.sameData(this.leftHeavyByTitle), false);
+  }
 }

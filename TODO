@@ -1,4 +1,0 @@
-- ABST:
-  - Delete unused methods
-  - Add tests
-  - Implement Visitor pattern

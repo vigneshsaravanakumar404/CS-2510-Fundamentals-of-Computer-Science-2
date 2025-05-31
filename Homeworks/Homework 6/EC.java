@@ -212,4 +212,5 @@ class ExamplesFunctionObjects {
     // internal fields and still calculate the same result, the checkExpect will
     // find them different.
   }
+
 }
