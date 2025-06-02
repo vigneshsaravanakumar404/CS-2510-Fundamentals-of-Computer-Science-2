@@ -310,4 +310,139 @@ class ExamplesVisitors {
         && t.checkExpect(this.allEven.apply(negEven), true)
         && t.checkExpect(this.allEven.apply(complexMixed), false);
   }
+
+  // Test Const.accept(IArithVisitor<>)
+  boolean testConstAccept(Tester t) {
+    return t.checkExpect(this.c2.accept(this.eval), 2.0)
+        && t.checkExpect(this.c2.accept(this.print), "2.0")
+        && t.checkExpect(this.c2.accept(this.mirror), new Const(2))
+        && t.checkExpect(this.c2.accept(this.allEven), true)
+        && t.checkExpect(this.c3.accept(this.allEven), false);
+  }
+
+  // Test UnaryFormula.accept(IArithVisitor<>)
+  boolean testUnaryFormulaAccept(Tester t) {
+    return t.checkExpect(this.negExpr.accept(this.eval), -3.0)
+        && t.checkExpect(this.sqrExpr.accept(this.print), "(sqr 4.0)")
+        && t.checkExpect(this.negExpr.accept(this.mirror),
+            new UnaryFormula(this.neg, "neg", this.c3))
+        && t.checkExpect(this.sqrExpr.accept(this.allEven), true);
+  }
+
+  // Test BinaryFormula.accept(IArithVisitor<>)
+  boolean testBinaryFormulaAccept(Tester t) {
+    return t.checkExpect(this.plusExpr.accept(this.eval), 3.0)
+        && t.checkExpect(this.minusExpr.accept(this.print), "(minus 5.0 3.0)")
+        && t.checkExpect(this.plusExpr.accept(this.mirror),
+            new BinaryFormula(this.plus, "plus", this.c2, this.c1))
+        && t.checkExpect(this.allEvenExpr.accept(this.allEven), true);
+  }
+
+  // Test EvalVisitor.visitConst(Const)
+  boolean testEvalVisitorConstVisit(Tester t) {
+    return t.checkExpect(this.eval.visitConst(new Const(1.5)), 1.5)
+        && t.checkExpect(this.eval.visitConst(new Const(-3.2)), -3.2)
+        && t.checkExpect(this.eval.visitConst(new Const(Math.PI)), Math.PI);
+  }
+
+  // Test EvalVisitor.visitUnaryFormula(UnaryFormula)
+  boolean testEvalVisitorUnaryVisit(Tester t) {
+    return t.checkExpect(this.eval.visitUnaryFormula((UnaryFormula) this.negExpr), -3.0)
+        && t.checkExpect(this.eval.visitUnaryFormula((UnaryFormula) this.sqrExpr), 16.0)
+        && t.checkExpect(
+            this.eval.visitUnaryFormula(
+                new UnaryFormula(this.neg, "neg", new Const(Math.PI))),
+            -Math.PI);
+  }
+
+  // Test EvalVisitor.visitBinaryFormula(BinaryFormula)
+  boolean testEvalVisitorBinaryVisit(Tester t) {
+    return t.checkExpect(this.eval.visitBinaryFormula((BinaryFormula) this.plusExpr), 3.0)
+        && t.checkExpect(this.eval.visitBinaryFormula((BinaryFormula) this.minusExpr), 2.0)
+        && t.checkInexact(
+            this.eval.visitBinaryFormula(
+                new BinaryFormula(this.mul, "mul", new Const(3.2), new Const(-1.5))),
+            -4.8, 0.000001);
+  }
+
+  // Test PrintVisitor.visitConst(Const)
+  boolean testPrintVisitorConstVisit(Tester t) {
+    return t.checkExpect(this.print.visitConst(new Const(1.5)), "1.5")
+        && t.checkExpect(this.print.visitConst(new Const(-3.2)), "-3.2")
+        && t.checkExpect(this.print.visitConst(new Const(Math.PI)), Double.toString(Math.PI));
+  }
+
+  // Test PrintVisitor.visitUnaryFormula(UnaryFormula)
+  boolean testPrintVisitorUnaryVisit(Tester t) {
+    return t.checkExpect(this.print.visitUnaryFormula((UnaryFormula) this.negExpr), "(neg 3.0)")
+        && t.checkExpect(this.print.visitUnaryFormula((UnaryFormula) this.sqrExpr), "(sqr 4.0)")
+        && t.checkExpect(
+            this.print.visitUnaryFormula(new UnaryFormula(this.neg, "neg", new Const(Math.PI))),
+            "(neg " + Double.toString(Math.PI) + ")");
+  }
+
+  // Test PrintVisitor.visitBinaryFormula(BinaryFormula)
+  boolean testPrintVisitorBinaryVisit(Tester t) {
+    return t.checkExpect(
+        this.print.visitBinaryFormula((BinaryFormula) this.plusExpr), "(plus 1.0 2.0)")
+        && t.checkExpect(
+            this.print.visitBinaryFormula((BinaryFormula) this.minusExpr), "(minus 5.0 3.0)")
+        && t.checkExpect(
+            this.print.visitBinaryFormula(
+                new BinaryFormula(this.mul, "mul", new Const(3.2), new Const(-1.5))),
+            "(mul 3.2 -1.5)");
+  }
+
+  // Test MirrorVisitor.visitConst(Const)
+  boolean testMirrorVisitorConstVisit(Tester t) {
+    return t.checkExpect(this.mirror.visitConst(new Const(1.5)), new Const(1.5))
+        && t.checkExpect(this.mirror.visitConst(new Const(-3.2)), new Const(-3.2))
+        && t.checkExpect(this.mirror.visitConst(new Const(Math.PI)), new Const(Math.PI));
+  }
+
+  // Test MirrorVisitor.visitUnaryFormula(UnaryFormula)
+  boolean testMirrorVisitorUnaryVisit(Tester t) {
+    UnaryFormula negPi = new UnaryFormula(this.neg, "neg", new Const(Math.PI));
+    return t.checkExpect(this.mirror.visitUnaryFormula((UnaryFormula) this.negExpr),
+        new UnaryFormula(this.neg, "neg", new Const(3.0)))
+        && t.checkExpect(this.mirror.visitUnaryFormula((UnaryFormula) this.sqrExpr),
+            new UnaryFormula(this.sqr, "sqr", new Const(4.0)))
+        && t.checkExpect(this.mirror.visitUnaryFormula(negPi), negPi);
+  }
+
+  // Test MirrorVisitor.visitBinaryFormula(BinaryFormula)
+  boolean testMirrorVisitorBinaryVisit(Tester t) {
+    return t.checkExpect(this.mirror.visitBinaryFormula((BinaryFormula) this.plusExpr),
+        new BinaryFormula(this.plus, "plus", this.c2, this.c1))
+        && t.checkExpect(this.mirror.visitBinaryFormula((BinaryFormula) this.minusExpr),
+            new BinaryFormula(this.minus, "minus", this.c3, this.c5))
+        && t.checkExpect(
+            this.mirror.visitBinaryFormula(
+                new BinaryFormula(this.mul, "mul", new Const(3.2), new Const(-1.5))),
+            new BinaryFormula(this.mul, "mul", new Const(-1.5), new Const(3.2)));
+  }
+
+  // Test AllEvenVisitor.visitConst(Const)
+  boolean testAllEvenVisitorConstVisit(Tester t) {
+    return t.checkExpect(this.allEven.visitConst(new Const(1.5)), false)
+        && t.checkExpect(this.allEven.visitConst(new Const(-3.2)), false)
+        && t.checkExpect(this.allEven.visitConst(new Const(2.0)), true)
+        && t.checkExpect(this.allEven.visitConst(new Const(0.0)), true);
+  }
+
+  // Test AllEvenVisitor.visitUnaryFormula(UnaryFormula)
+  boolean testAllEvenVisitorUnaryVisit(Tester t) {
+    return t.checkExpect(this.allEven.visitUnaryFormula((UnaryFormula) this.negExpr), false)
+        && t.checkExpect(this.allEven.visitUnaryFormula((UnaryFormula) this.sqrExpr), true)
+        && t.checkExpect(
+            this.allEven.visitUnaryFormula(new UnaryFormula(this.neg, "neg", this.c2)), true);
+  }
+
+  // Test AllEvenVisitor.visitBinaryFormula(BinaryFormula)
+  boolean testAllEvenVisitorBinaryVisit(Tester t) {
+    return t.checkExpect(this.allEven.visitBinaryFormula((BinaryFormula) this.allEvenExpr), true)
+        && t.checkExpect(this.allEven.visitBinaryFormula((BinaryFormula) this.mixedExpr), false)
+        && t.checkExpect(this.allEven.visitBinaryFormula(
+            new BinaryFormula(this.mul, "mul", new Const(3.2), new Const(-1.5))), false);
+  }
 }
