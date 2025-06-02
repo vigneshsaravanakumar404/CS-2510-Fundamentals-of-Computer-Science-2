@@ -183,6 +183,17 @@ class AllEvenVisitor implements IArithVisitor<Boolean> {
 // ExamplesVisitors class with test cases
 class ExamplesVisitors {
 
+  // Constants
+  IArith c0 = new Const(0.0);
+  IArith c1 = new Const(1.0);
+  IArith c2 = new Const(2.0);
+  IArith c3 = new Const(3.0);
+  IArith c4 = new Const(4.0);
+  IArith c5 = new Const(5.0);
+  IArith const6 = new Const(6.0);
+  IArith cN2 = new Const(-2.0);
+
+  // Functions
   Function<Double, Double> neg = x -> -x;
   Function<Double, Double> sqr = x -> x * x;
   BiFunction<Double, Double, Double> plus = (x, y) -> x + y;
@@ -190,21 +201,107 @@ class ExamplesVisitors {
   BiFunction<Double, Double, Double> mul = (x, y) -> x * y;
   BiFunction<Double, Double, Double> div = (x, y) -> x / y;
 
-  IArith const1 = new Const(1.0);
-  IArith const2 = new Const(2.0);
-  IArith const3 = new Const(1.5);
-  IArith const4 = new Const(4.0);
+  // Arithmetic expressions
+  IArith plusExpr = new BinaryFormula(plus, "plus", c1, c2);
+  IArith minusExpr = new BinaryFormula(minus, "minus", c5, c3);
+  IArith mulExpr = new BinaryFormula(mul, "mul", c4, c3);
+  IArith divExpr = new BinaryFormula(div, "div", const6, c2);
+  IArith negExpr = new UnaryFormula(neg, "neg", c3);
+  IArith sqrExpr = new UnaryFormula(sqr, "sqr", c4);
+  IArith allEvenExpr = new BinaryFormula(plus, "plus", c2, c2);
+  IArith mixedExpr = new BinaryFormula(mul, "mul", c2, c3);
+  IArith allOddExpr = new BinaryFormula(minus, "minus", c3, c5);
 
-  // 1.0 + 2.0
-  IArith plusExpr = new BinaryFormula(plus, "plus", const1, const2);
+  // Nested expressions
+  IArith nestedExpr1 = new BinaryFormula(div, "div", plusExpr, negExpr);
+  IArith nestedExpr2 = new UnaryFormula(sqr, "sqr", minusExpr);
+  IArith deeplyNested = new BinaryFormula(mul, "mul",
+      new UnaryFormula(neg, "neg", plusExpr),
+      new BinaryFormula(minus, "minus", sqrExpr, mulExpr));
+  IArith nestedEvenExpr = new BinaryFormula(plus, "plus",
+      new UnaryFormula(neg, "neg", c2),
+      new BinaryFormula(mul, "mul", c2, const6));
 
-  // neg 1.5
-  IArith negExpr = new UnaryFormula(neg, "neg", const3);
+  // Visitors
+  AllEvenVisitor allEven = new AllEvenVisitor();
+  MirrorVisitor mirror = new MirrorVisitor();
+  EvalVisitor eval = new EvalVisitor();
+  PrintVisitor print = new PrintVisitor();
 
-  // 1.0 + 2.0 / neg 1.5
-  IArith complexExpr = new BinaryFormula(div, "div", plusExpr, negExpr);
+  // tests for EvalVisitor
+  boolean testEvalVisitor(Tester t) {
+    return t.checkInexact(this.eval.apply(this.plusExpr), 3.0, 0.001)
+        && t.checkInexact(this.eval.apply(this.nestedExpr1), -1.0, 0.001)
+        && t.checkInexact(this.eval.apply(this.deeplyNested), -12.0, 0.001);
+  }
 
-  // sqrt(4.0)
-  IArith sqrExpr = new UnaryFormula(sqr, "sqr", const4);
+  // tests for PrintVisitor
+  boolean testPrintVisitor(Tester t) {
+    return t.checkExpect(this.print.apply(this.c4), "4.0")
+        && t.checkExpect(this.print.apply(this.sqrExpr), "(sqr 4.0)")
+        && t.checkExpect(this.print.apply(this.nestedExpr1), "(div (plus 1.0 2.0) (neg 3.0))");
+  }
 
+  // tests for MirrorVisitor with EvalVisitor to verify correctness
+  boolean testMirrorVisitor(Tester t) {
+    return t.checkInexact(this.eval.apply(this.mirror.apply(this.minusExpr)), -2.0, 0.001)
+        && t.checkInexact(this.eval.apply(this.mirror.apply(this.nestedExpr1)), -1.0, 0.001)
+        && t.checkInexact(this.eval.apply(this.mirror.apply(this.deeplyNested)), 12.0, 0.001);
+  }
+
+  // tests for AllEvenVisitor
+  boolean testAllEvenVisitor(Tester t) {
+    return t.checkExpect(this.allEven.apply(this.allEvenExpr), true)
+        && t.checkExpect(this.allEven.apply(this.mixedExpr), false)
+        && t.checkExpect(this.allEven.apply(this.nestedEvenExpr), true);
+  }
+
+  // Additional tests for unary operations with EvalVisitor
+  boolean testUnaryOperations(Tester t) {
+    return t.checkInexact(this.eval.apply(new UnaryFormula(this.neg, "neg", this.c0)), 0.0, 0.001)
+        && t.checkInexact(this.eval.apply(new UnaryFormula(this.sqr, "sqr", this.cN2)), 4.0, 0.001)
+        && t.checkInexact(this.eval.apply(new UnaryFormula(this.neg, "neg", this.negExpr)), 3.0, 0.001);
+  }
+
+  // Additional tests for binary operations with EvalVisitor
+  boolean testBinaryOperations(Tester t) {
+    return t.checkInexact(this.eval.apply(new BinaryFormula(this.div, "div", this.c5, this.c1)), 5.0, 0.001)
+        && t.checkInexact(this.eval.apply(new BinaryFormula(this.mul, "mul", this.c4, this.c0)), 0.0, 0.001)
+        && t.checkInexact(this.eval.apply(new BinaryFormula(this.plus, "plus", this.c3, this.cN2)), 1.0, 0.001);
+  }
+
+  // Additional tests for PrintVisitor with complex expressions
+  boolean testPrintVisitorComplex(Tester t) {
+    IArith expr1 = new BinaryFormula(this.mul, "mul", this.c0, this.negExpr);
+    IArith expr2 = new UnaryFormula(this.neg, "neg", this.divExpr);
+    IArith expr3 = new BinaryFormula(this.plus, "plus", this.sqrExpr, new UnaryFormula(neg, "neg", this.sqrExpr));
+
+    return t.checkExpect(this.print.apply(expr1), "(mul 0.0 (neg 3.0))")
+        && t.checkExpect(this.print.apply(expr2), "(neg (div 6.0 2.0))")
+        && t.checkExpect(this.print.apply(expr3), "(plus (sqr 4.0) (neg (sqr 4.0)))");
+  }
+
+  // Additional tests for MirrorVisitor with PrintVisitor to see structure
+  boolean testMirrorVisitorStructure(Tester t) {
+    IArith expr1 = new BinaryFormula(this.div, "div", this.const6, this.c3);
+    IArith expr2 = new BinaryFormula(this.minus, "minus", this.plusExpr, this.mulExpr);
+    IArith expr3 = new UnaryFormula(this.sqr, "sqr", this.minusExpr);
+
+    return t.checkExpect(this.print.apply(this.mirror.apply(expr1)), "(div 3.0 6.0)")
+        && t.checkExpect(this.print.apply(this.mirror.apply(expr2)), "(minus (mul 3.0 4.0) (plus 2.0 1.0))")
+        && t.checkExpect(this.print.apply(this.mirror.apply(expr3)), "(sqr (minus 3.0 5.0))");
+  }
+
+  // Additional tests for AllEvenVisitor with edge cases
+  boolean testAllEvenVisitorEdgeCases(Tester t) {
+    IArith zeroExpr = new UnaryFormula(this.neg, "neg", this.c0);
+    IArith negEven = new UnaryFormula(this.neg, "neg", this.c2);
+    IArith complexMixed = new BinaryFormula(this.plus, "plus",
+        new BinaryFormula(this.mul, "mul", this.c2, this.c2),
+        new UnaryFormula(this.sqr, "sqr", this.c3));
+
+    return t.checkExpect(this.allEven.apply(zeroExpr), true)
+        && t.checkExpect(this.allEven.apply(negEven), true)
+        && t.checkExpect(this.allEven.apply(complexMixed), false);
+  }
 }
