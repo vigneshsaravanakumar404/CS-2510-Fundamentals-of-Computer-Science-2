@@ -260,21 +260,26 @@ class ExamplesVisitors {
   boolean testUnaryOperations(Tester t) {
     return t.checkInexact(this.eval.apply(new UnaryFormula(this.neg, "neg", this.c0)), 0.0, 0.001)
         && t.checkInexact(this.eval.apply(new UnaryFormula(this.sqr, "sqr", this.cN2)), 4.0, 0.001)
-        && t.checkInexact(this.eval.apply(new UnaryFormula(this.neg, "neg", this.negExpr)), 3.0, 0.001);
+        && t.checkInexact(this.eval.apply(
+            new UnaryFormula(this.neg, "neg", this.negExpr)), 3.0, 0.001);
   }
 
   // Additional tests for binary operations with EvalVisitor
   boolean testBinaryOperations(Tester t) {
-    return t.checkInexact(this.eval.apply(new BinaryFormula(this.div, "div", this.c5, this.c1)), 5.0, 0.001)
-        && t.checkInexact(this.eval.apply(new BinaryFormula(this.mul, "mul", this.c4, this.c0)), 0.0, 0.001)
-        && t.checkInexact(this.eval.apply(new BinaryFormula(this.plus, "plus", this.c3, this.cN2)), 1.0, 0.001);
+    return t.checkInexact(this.eval.apply(
+        new BinaryFormula(this.div, "div", this.c5, this.c1)), 5.0, 0.001)
+        && t.checkInexact(this.eval.apply(
+            new BinaryFormula(this.mul, "mul", this.c4, this.c0)), 0.0, 0.001)
+        && t.checkInexact(this.eval.apply(
+            new BinaryFormula(this.plus, "plus", this.c3, this.cN2)), 1.0, 0.001);
   }
 
   // Additional tests for PrintVisitor with complex expressions
   boolean testPrintVisitorComplex(Tester t) {
     IArith expr1 = new BinaryFormula(this.mul, "mul", this.c0, this.negExpr);
     IArith expr2 = new UnaryFormula(this.neg, "neg", this.divExpr);
-    IArith expr3 = new BinaryFormula(this.plus, "plus", this.sqrExpr, new UnaryFormula(neg, "neg", this.sqrExpr));
+    IArith expr3 = new BinaryFormula(this.plus, "plus", this.sqrExpr,
+        new UnaryFormula(neg, "neg", this.sqrExpr));
 
     return t.checkExpect(this.print.apply(expr1), "(mul 0.0 (neg 3.0))")
         && t.checkExpect(this.print.apply(expr2), "(neg (div 6.0 2.0))")
@@ -288,7 +293,8 @@ class ExamplesVisitors {
     IArith expr3 = new UnaryFormula(this.sqr, "sqr", this.minusExpr);
 
     return t.checkExpect(this.print.apply(this.mirror.apply(expr1)), "(div 3.0 6.0)")
-        && t.checkExpect(this.print.apply(this.mirror.apply(expr2)), "(minus (mul 3.0 4.0) (plus 2.0 1.0))")
+        && t.checkExpect(this.print.apply(this.mirror.apply(expr2)),
+            "(minus (mul 3.0 4.0) (plus 2.0 1.0))")
         && t.checkExpect(this.print.apply(this.mirror.apply(expr3)), "(sqr (minus 3.0 5.0))");
   }
 
