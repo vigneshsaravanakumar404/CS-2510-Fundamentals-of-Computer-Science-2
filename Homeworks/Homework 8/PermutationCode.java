@@ -1,43 +1,60 @@
-import java.util.*;
+import tester.Tester;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
-/**
- * A class that defines a new permutation code, as well as methods for encoding
- * and decoding of the messages that use this code.
- */
+// represents a simple permutation code that can encode and decode messages
 class PermutationCode {
-  // The original list of characters to be encoded
   ArrayList<Character> alphabet = new ArrayList<Character>(Arrays.asList(
       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
       'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
       't', 'u', 'v', 'w', 'x', 'y', 'z'));
-
   ArrayList<Character> code = new ArrayList<Character>(26);
-
-  // A random number generator
   Random rand = new Random();
 
-  // Create a new instance of the encoder/decoder with a new permutation code
+  // the constructor
   PermutationCode() {
     this.code = this.initEncoder();
   }
 
-  // Create a new instance of the encoder/decoder with the given code
+  // the constructor
   PermutationCode(ArrayList<Character> code) {
     this.code = code;
   }
 
-  // Initialize the encoding permutation of the characters
+  // initializes the encoder with a random permutation of the alphabet
   ArrayList<Character> initEncoder() {
-    return this.alphabet; // you should complete this method
+    ArrayList<Character> alphabetCopy = new ArrayList<Character>(this.alphabet);
+    ArrayList<Character> encoder = new ArrayList<Character>(26);
+
+    while (!alphabetCopy.isEmpty()) {
+      int randomIndex = rand.nextInt(alphabetCopy.size());
+      encoder.add(alphabetCopy.remove(randomIndex));
+    }
+
+    return encoder;
   }
 
-  // produce an encoded String from the given String
+  // returns the code used for encoding
   String encode(String source) {
-    return ""; // you should complete this method
+    return transform(source, this.alphabet, this.code);
   }
 
-  // produce a decoded String from the given String
+  // returns the code used for decoding
   String decode(String code) {
-    return ""; // you should complete this method
+    return transform(code, this.code, this.alphabet);
+  }
+
+  // transforms the text using the provided fromList and toList
+  String transform(String text, ArrayList<Character> fromList, ArrayList<Character> toList) {
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < text.length(); i++) {
+      char currentChar = text.charAt(i);
+      int index = fromList.indexOf(currentChar);
+      result.append(toList.get(index));
+    }
+
+    return result.toString();
   }
 }

@@ -12,6 +12,11 @@ abstract class ANode<T> {
   // returns the data of the removed node (will be overridden)
   abstract T remove();
 
+  // helper methods for double delegation
+  abstract void updateNext(ANode<T> newNext);
+
+  abstract void updatePrev(ANode<T> newPrev);
+
   // returns the first node that matches the predicate, or itself if none match
   abstract ANode<T> find(Predicate<T> pred);
 }
@@ -33,6 +38,16 @@ class Sentinel<T> extends ANode<T> {
   // returns an exception since sentinel cannot be removed
   T remove() {
     throw new RuntimeException("Cannot remove from an empty list");
+  }
+
+  // updates the next pointer
+  void updateNext(ANode<T> newNext) {
+    this.next = newNext;
+  }
+
+  // updates the prev pointer
+  void updatePrev(ANode<T> newPrev) {
+    this.prev = newPrev;
   }
 
   // returns itself since sentinel does not hold data
@@ -69,11 +84,23 @@ class Node<T> extends ANode<T> {
     return 1 + this.next.size();
   }
 
-  // returns the data of the removed node
+  // returns the data of the removed node using double delegation
   T remove() {
-    this.prev.next = this.next;
-    this.next.prev = this.prev;
+    // First delegation: ask prev to update its next pointer
+    this.prev.updateNext(this.next);
+    // Second delegation: ask next to update its prev pointer
+    this.next.updatePrev(this.prev);
     return this.data;
+  }
+
+  // updates the next pointer
+  void updateNext(ANode<T> newNext) {
+    this.next = newNext;
+  }
+
+  // updates the prev pointer
+  void updatePrev(ANode<T> newPrev) {
+    this.prev = newPrev;
   }
 
   // returns the first node that matches the predicate, or itself if none match
@@ -150,6 +177,142 @@ class ExamplesDeque {
   Node<String> nodeC = new Node<String>("mango", this.deque3.header, this.nodeB);
   Node<String> nodeD = new Node<String>("banana", this.deque3.header, this.nodeC);
   Node<String> nodeE = new Node<String>("kiwi", this.deque3.header, this.nodeD);
+
+  // Test size() method for Sentinel
+  boolean testSentinelSize(Tester t) {
+    Sentinel<String> sentinel1 = new Sentinel<String>();
+    Sentinel<Integer> sentinel2 = new Sentinel<Integer>();
+
+    return t.checkExpect(sentinel1.size(), 0) &&
+        t.checkExpect(sentinel2.size(), 0);
+  }
+
+  // Test size() method for Node
+  boolean testNodeSize(Tester t) {
+    // Create a sentinel for testing
+    Sentinel<String> header = new Sentinel<String>();
+
+    // Single node pointing to sentinel
+    Node<String> single = new Node<String>("solo", header, header);
+
+    // Chain of nodes
+    Node<String> first = new Node<String>("first", header, header);
+    Node<String> second = new Node<String>("second", header, first);
+    Node<String> third = new Node<String>("third", header, second);
+
+    return t.checkExpect(single.size(), 1) &&
+        t.checkExpect(first.size(), 3) &&
+        t.checkExpect(second.size(), 2) &&
+        t.checkExpect(third.size(), 1);
+  }
+
+  // Test remove() method for Sentinel
+  boolean testSentinelRemove(Tester t) {
+    Sentinel<String> sentinel = new Sentinel<String>();
+
+    return t.checkException(new RuntimeException("Cannot remove from an empty list"),
+        sentinel, "remove");
+  }
+
+  // Test remove() method for Node
+  boolean testNodeRemove(Tester t) {
+    // Test 1: Remove a single node
+    Sentinel<String> header1 = new Sentinel<String>();
+    Node<String> single = new Node<String>("alone", header1, header1);
+    String removed1 = single.remove();
+    boolean check1 = header1.next == header1 && header1.prev == header1;
+
+    // Test 2: Remove middle node from chain
+    Sentinel<String> header2 = new Sentinel<String>();
+    Node<String> n1 = new Node<String>("A", header2, header2);
+    Node<String> n2 = new Node<String>("B", header2, n1);
+    Node<String> n3 = new Node<String>("C", header2, n2);
+    String removed2 = n2.remove();
+    boolean check2 = n1.next == n3 && n3.prev == n1;
+
+    // Test 3: Remove first node
+    Sentinel<String> header3 = new Sentinel<String>();
+    Node<String> first = new Node<String>("first", header3, header3);
+    Node<String> second = new Node<String>("second", header3, first);
+    String removed3 = first.remove();
+    boolean check3 = header3.next == second && second.prev == header3;
+
+    // Test 4: Remove last node
+    Sentinel<String> header4 = new Sentinel<String>();
+    Node<String> n4_1 = new Node<String>("X", header4, header4);
+    Node<String> n4_2 = new Node<String>("Y", header4, n4_1);
+    String removed4 = n4_2.remove();
+    boolean check4 = n4_1.next == header4 && header4.prev == n4_1;
+
+    return t.checkExpect(removed1, "alone") && check1 &&
+        t.checkExpect(removed2, "B") && check2 &&
+        t.checkExpect(removed3, "first") && check3 &&
+        t.checkExpect(removed4, "Y") && check4;
+  }
+
+  // Test find() method for Sentinel
+  boolean testSentinelFind(Tester t) {
+    Sentinel<String> sentinel1 = new Sentinel<String>();
+    Sentinel<Integer> sentinel2 = new Sentinel<Integer>();
+
+    // Sentinel always returns itself
+    return t.checkExpect(sentinel1.find(s -> true), sentinel1) &&
+        t.checkExpect(sentinel1.find(s -> false), sentinel1) &&
+        t.checkExpect(sentinel2.find(n -> n > 0), sentinel2);
+  }
+
+  // Test find() method for Node
+  boolean testNodeFind(Tester t) {
+    // Setup test structure
+    Sentinel<String> header = new Sentinel<String>();
+    Node<String> n1 = new Node<String>("apple", header, header);
+    Node<String> n2 = new Node<String>("banana", header, n1);
+    Node<String> n3 = new Node<String>("cherry", header, n2);
+    Node<String> n4 = new Node<String>("date", header, n3);
+
+    // Test finding existing elements
+    ANode<String> found1 = n1.find(s -> s.equals("apple"));
+    ANode<String> found2 = n1.find(s -> s.equals("cherry"));
+    ANode<String> found3 = n2.find(s -> s.startsWith("d"));
+
+    // Test not finding elements
+    ANode<String> notFound1 = n1.find(s -> s.equals("grape"));
+    ANode<String> notFound2 = n3.find(s -> s.length() > 10);
+
+    // Test finding with different predicates
+    ANode<String> firstWithA = n1.find(s -> s.contains("a"));
+    ANode<String> firstWith6Chars = n1.find(s -> s.length() == 6);
+
+    return t.checkExpect(found1, n1) &&
+        t.checkExpect(found2, n3) &&
+        t.checkExpect(found3, n4) &&
+        t.checkExpect(notFound1, header) &&
+        t.checkExpect(notFound2, header) &&
+        t.checkExpect(firstWithA, n1) &&
+        t.checkExpect(firstWith6Chars, n2);
+  }
+
+  // Test updateNext() and updatePrev() for proper delegation
+  boolean testUpdateMethods(Tester t) {
+    // Test Sentinel update methods
+    Sentinel<String> sentinel = new Sentinel<String>();
+    Node<String> node = new Node<String>("test");
+    sentinel.updateNext(node);
+    sentinel.updatePrev(node);
+    boolean sentinelCheck = sentinel.next == node && sentinel.prev == node;
+
+    // Test Node update methods
+    Node<String> n1 = new Node<String>("n1");
+    Node<String> n2 = new Node<String>("n2");
+    Node<String> n3 = new Node<String>("n3");
+
+    n1.updateNext(n2);
+    n1.updatePrev(n3);
+    boolean nodeCheck = n1.next == n2 && n1.prev == n3;
+
+    return t.checkExpect(sentinelCheck, true) &&
+        t.checkExpect(nodeCheck, true);
+  }
 
   // test size
   boolean testSize(Tester t) {
