@@ -2,6 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "ListPractice",
+      "request": "launch",
+      "mainClass": "ListPractice",
+      "projectName": "CS 2510_bbbf2956"
+    },
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "CS 2510_bbbf2956"
+    },
+    {
       "name": "Run Java with tester.jar",
       "type": "java",
       "request": "launch",

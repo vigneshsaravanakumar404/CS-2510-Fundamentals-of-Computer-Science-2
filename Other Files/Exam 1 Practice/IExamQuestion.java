@@ -1,4 +1,3 @@
-import tester.Tester;
 
 interface IExamQuestion {
 

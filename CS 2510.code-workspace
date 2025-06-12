@@ -12,5 +12,6 @@
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "java.debug.settings.onBuildFailureProceed": true,
   },
 }
