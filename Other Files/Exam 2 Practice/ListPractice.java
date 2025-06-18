@@ -56,6 +56,21 @@
 // }
 
 // }
+
+// void append(Deque<T> given) {
+//     if (given.size() != 0) {
+//       ANode<T> lastOfThis = this.h.prev;
+//       ANode<T> firstOfThat = given.h.next;
+//       ANode<T> lastOfThat = given.h.prev;
+//       this.h.prev = lastOfThat;
+//       lastOfThat.setNext(this.h);
+//       lastOfThis.setNext(firstOfThat);
+//       firstOfThat.setPrev(lastOfThis);
+//       given.h.next = given.h;
+//       given.h.prev = given.h;
+//     }
+//   }
+
 import java.util.function.Predicate;
 import java.util.function.BiFunction;
 import java.util.Iterator;
@@ -100,19 +115,17 @@ class Deque<T> {
     return this.h.find(p);
   }
 
-  void append(Deque<T> given) {
-    if (given.size() != 0) {
-      ANode<T> lastOfThis = this.h.prev;
-      ANode<T> firstOfThat = given.h.next;
-      ANode<T> lastOfThat = given.h.prev;
-      this.h.prev = lastOfThat;
-      lastOfThat.setNext(this.h);
-      lastOfThis.setNext(firstOfThat);
-      firstOfThat.setPrev(lastOfThis);
-      given.h.next = given.h;
-      given.h.prev = given.h;
-    }
+  void append(Deque<T> given){
+    ANode<T> lastOfThis = this.h.prev;
+    ANode<T> firstOfThat = given.h.next;
+    ANode<T> lastofThat = given.h.prev;
+
+    this.h.prev = lastofThat;
+    lastOfThis.next = firstOfThat;
+    firstOfThat.next = this.h.prev;
+    lastofThat.prev = lastOfThis.
   }
+
 }
 
 abstract class ANode<T> {
