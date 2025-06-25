@@ -16,7 +16,7 @@
 | Category                 | Information |
 | :----------------------- | :---------- |
 | **Semester**             | Spring 2025 |
-| **Grade Earned**         | 102.07 (A)  |
+| **Grade Earned**         | 102.07% (A) |
 | **Programming Language** | Java        |
 
 ## 🏛️ Repository Structure
