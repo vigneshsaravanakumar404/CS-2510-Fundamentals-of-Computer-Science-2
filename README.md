@@ -15,7 +15,7 @@
 
 | Category                 | Information |
 | :----------------------- | :---------- |
-| **Semester**             | Spring 2025 |
+| **Semester**             | Summer 1 2025 |
 | **Grade Earned**         | 102.07% (A) |
 | **Programming Language** | Java        |
 
