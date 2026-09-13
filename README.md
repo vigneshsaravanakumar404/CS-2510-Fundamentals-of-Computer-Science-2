@@ -9,28 +9,30 @@
 
 ## 📚 Course Overview
 
-**CS 2510** continues CS 2510. Examines object-oriented programming and associated algorithms using more complex data structures as the focus. Discusses nested structures and nonlinear structures including hash tables, trees, and graphs. Emphasizes abstraction, encapsulation, inheritance, polymorphism, recursion, and object-oriented design patterns. Applies these ideas to sample applications that illustrate the breadth of computer science.
+**CS 2510** continues CS 2500. Examines object-oriented programming and associated algorithms using more complex data structures as the focus. Discusses nested structures and nonlinear structures including hash tables, trees, and graphs. Emphasizes abstraction, encapsulation, inheritance, polymorphism, recursion, and object-oriented design patterns. Applies these ideas to sample applications that illustrate the breadth of computer science.
 
 ## 📋 Course Details
 
-| Category                 | Information |
-| :----------------------- | :---------- |
-| **Semester**             | Summer 1 2025 |
-| **Grade Earned**         | 102.07% (A) |
-| **Programming Language** | Java        |
+| Category                    | Information |
+| :-------------------------- | :---------- |
+| **Semester**                | Spring 2025 |
+| **Grade Earned**            | A |
+| **Programming Language**    | Java |
+| **Development Environment** | Visual Studio Code |
 
 ## 🏛️ Repository Structure
 
 ```
 .
 ├── README.md          # Course information (this file)
-├── Course File/       # Official Lecture Notes
+├── Homeworks/         # Homework Files
 ├── Labs/              # Lab Assignments
-├── Homework/          # Homework Files
+├── Other Files/       # Miscellaneous Course Files
+└── Past Mistakes.txt  # Running list of errors to avoid
 ```
 
 ---
 
 <div align="center">
-  <p><em>© Vignesh Saravanakumar 2025 | Northeastern University</em></p>
+  <p><em>© Vignesh Saravanakumar 2026 | Northeastern University</em></p>
 </div>
