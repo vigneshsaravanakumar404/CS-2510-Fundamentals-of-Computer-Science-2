@@ -16,7 +16,7 @@
 | Category                    | Information |
 | :-------------------------- | :---------- |
 | **Semester**                | Spring 2025 |
-| **Grade Earned**            | A |
+| **Grade Earned**            | 102.07% (A) |
 | **Programming Language**    | Java |
 | **Development Environment** | Visual Studio Code |
 
